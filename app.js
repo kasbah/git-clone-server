@@ -7,22 +7,46 @@ const isGitUrl   = require('is-git-url')
 const path       = require('path')
 const redux      = require('redux')
 const session    = require('express-session')
+const FileStore = require('session-file-store')(session);
+
+const maxAge = 5 * 3600
+const app = express()
+const sessionStore = new FileStore()
+
+
+app.use(session({
+    store: sessionStore,
+    secret: 'keyboard cat',
+    cookie: { maxAge: maxAge }
+}))
 
 function reducer (state = {}, action) {
+    console.log(action)
     switch(action.type) {
         case 'ADD_SESSION':
-            state[action.id] = {cloneProgress: 0}
+            state[action.id] = {paths:action.value, cloneProgress: 0}
+            let interval = setInterval(() => {
+                sessionStore.get(action.id, (err, s) => {
+                    if (err == null && s == null) {
+                        clearInterval(interval)
+                        store.dispatch({type: 'REMOVE_SESSION', id: action.id})
+                    }
+                })
+            }, maxAge)
             return state
         case 'UPDATE_CLONE_PROGRESS':
-            state[action.id].cloneProgress = action.value
+            if (state[action.id] != null) {
+                state[action.id].cloneProgress = action.value
+            }
             return state
+        case 'REMOVE_SESSION':
+            cp.exec(`rm -rf tmp/${action.id}`)
+            delete state[action.id]
     }
 }
 
 let store = redux.createStore(reducer)
-let app = express()
 
-app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }}))
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.get('/', function(req, res, next) {
@@ -40,7 +64,7 @@ app.post('/', function(req, res, next) {
     const isGit = isGitUrl(req.body.url)
     if (isGit) {
         const path = repoToFolder(req.session.id, req.body.url)
-        store.dispatch({type:'ADD_SESSION', id:req.session.id})
+        store.dispatch({type:'ADD_SESSION', id:req.session.id, url:req.body.url})
         let pid
         if (fs.existsSync(path)) {
             pid = cp.exec('git fetch && git reset --hard origin/HEAD', {cwd:path})
@@ -53,24 +77,32 @@ app.post('/', function(req, res, next) {
             if (code === 0) {
                 action.value = 100
             }
+            else if (code === null) {
+                action.value = 'timed out'
+            }
             else {
-                action.value = 'failed'
+                action.value = `failed ${code}`
             }
             store.dispatch(action)
         })
+        setTimeout(() => {
+            pid.kill()
+        }, 3 * 3600)
     }
-    res.setHeader('Content-Type', 'application/json')
-    res.end(JSON.stringify(isGit))
+    res.redirect('/progress')
+    //res.setHeader('Content-Type', 'application/json')
+    //res.end(JSON.stringify(isGit))
 })
 
 app.get('/progress', function(req, res, next) {
     const state = store.getState()
     res.setHeader('Content-Type', 'application/json')
+    req.session.touch()
     if (state == null || state[req.session.id] == null)  {
         return res.end("invalid session")
     }
     else {
-        return res.end(JSON.stringify(state[req.session.id].cloneProgress))
+        return res.end(JSON.stringify({id:req.session.id, progress: state[req.session.id].cloneProgress}))
     }
 })
 
