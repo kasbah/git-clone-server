@@ -9,9 +9,9 @@ const redux      = require('redux')
 const session    = require('express-session')
 const FileStore = require('session-file-store')(session);
 
-const maxAge = 5 * 3600
+const maxAge = 60 * 3600
 const app = express()
-const sessionStore = new FileStore()
+const sessionStore = new FileStore({reapSessions: maxAge / 1000})
 
 
 app.use(session({
@@ -23,6 +23,8 @@ app.use(session({
 function reducer (state = {}, action) {
     console.log(action)
     switch(action.type) {
+        case '@@redux/INIT':
+            return {}
         case 'ADD_SESSION':
             state[action.id] = {paths:action.value, cloneProgress: 0}
             let interval = setInterval(() => {
@@ -42,6 +44,7 @@ function reducer (state = {}, action) {
         case 'REMOVE_SESSION':
             cp.exec(`rm -rf tmp/${action.id}`)
             delete state[action.id]
+            return state
     }
 }
 
@@ -63,14 +66,14 @@ app.get('/', function(req, res, next) {
 app.post('/', function(req, res, next) {
     const isGit = isGitUrl(req.body.url)
     if (isGit) {
-        const path = repoToFolder(req.session.id, req.body.url)
+        const folder = repoToFolder(req.session.id, req.body.url)
         store.dispatch({type:'ADD_SESSION', id:req.session.id, url:req.body.url})
         let pid
-        if (fs.existsSync(path)) {
-            pid = cp.exec('git fetch && git reset --hard origin/HEAD', {cwd:path})
+        if (fs.existsSync(folder)) {
+            pid = cp.exec('git fetch && git reset --hard origin/HEAD', {cwd:folder})
         }
         else {
-            pid = cp.exec(`git clone --depth=1 ${req.body.url} ${path}`)
+            pid = cp.exec(`git clone --depth=1 ${req.body.url} ${folder}`)
         }
         pid.on('exit', (code) => {
             let action = {type:'UPDATE_CLONE_PROGRESS', id:req.session.id}
@@ -97,13 +100,39 @@ app.post('/', function(req, res, next) {
 app.get('/progress', function(req, res, next) {
     const state = store.getState()
     res.setHeader('Content-Type', 'application/json')
-    req.session.touch()
-    if (state == null || state[req.session.id] == null)  {
+    if (state[req.session.id] == null)  {
         return res.end("invalid session")
     }
     else {
-        return res.end(JSON.stringify({id:req.session.id, progress: state[req.session.id].cloneProgress}))
+        return res.end(JSON.stringify({
+            id:req.session.id,
+            progress: state[req.session.id].cloneProgress
+        }))
     }
+})
+
+app.get('/files/:name', function(req, res, next) {
+    const state = store.getState()
+    if (state[req.session.id] == null)  {
+        res.setHeader('Content-Type', 'application/json')
+        return res.end("invalid session")
+    }
+    else if (state[req.session.id].cloneProgress !== 100) {
+        res.setHeader('Content-Type', 'application/json')
+        return res.end(String(state[req.session.id].cloneProgress))
+    } else {
+        switch(req.params.name) {
+            case 'top.svg':
+                const filePath = 'top.svg'
+                const stat = fs.statSync(filePath)
+                res.writeHead(200, {
+                    'Content-Type': 'image/svg+xml',
+                    'Content-Length': stat.size
+                });
+                return fs.createReadStream('top.svg').pipe(res)
+        }
+    }
+    return res.status(404).end('error');
 })
 
 app.listen(3000, function () {
