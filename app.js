@@ -9,7 +9,7 @@ const redux      = require('redux')
 const session    = require('express-session')
 const FileStore = require('session-file-store')(session);
 
-const maxAge = 60 * 3600
+const maxAge = 60 * 60 * 1000 //ms
 const app = express()
 const sessionStore = new FileStore({reapSessions: maxAge / 1000})
 
@@ -26,7 +26,7 @@ function reducer (state = {}, action) {
         case '@@redux/INIT':
             return {}
         case 'ADD_SESSION':
-            state[action.id] = {paths:action.value, cloneProgress: 0}
+            state[action.id] = {paths:action.value, progress: 0}
             let interval = setInterval(() => {
                 sessionStore.get(action.id, (err, s) => {
                     if (err == null && s == null) {
@@ -38,7 +38,7 @@ function reducer (state = {}, action) {
             return state
         case 'UPDATE_CLONE_PROGRESS':
             if (state[action.id] != null) {
-                state[action.id].cloneProgress = action.value
+                state[action.id].progress = action.value
             }
             return state
         case 'REMOVE_SESSION':
@@ -90,7 +90,7 @@ app.post('/', function(req, res, next) {
         })
         setTimeout(() => {
             pid.kill()
-        }, 3 * 3600)
+        }, 3 * 60 * 1000)
     }
     res.redirect('/progress')
     //res.setHeader('Content-Type', 'application/json')
@@ -106,7 +106,7 @@ app.get('/progress', function(req, res, next) {
     else {
         return res.end(JSON.stringify({
             id:req.session.id,
-            progress: state[req.session.id].cloneProgress
+            progress: state[req.session.id].progress
         }))
     }
 })
@@ -117,9 +117,9 @@ app.get('/files/:name', function(req, res, next) {
         res.setHeader('Content-Type', 'application/json')
         return res.end("invalid session")
     }
-    else if (state[req.session.id].cloneProgress !== 100) {
+    else if (state[req.session.id].progress !== 100) {
         res.setHeader('Content-Type', 'application/json')
-        return res.end(String(state[req.session.id].cloneProgress))
+        return res.end(String(state[req.session.id].progress))
     } else {
         switch(req.params.name) {
             case 'top.svg':
