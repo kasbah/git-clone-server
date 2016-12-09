@@ -5,24 +5,44 @@ const isGitUrl        = require('is-git-url')
 const graphqlTools    = require('graphql-tools')
 
 const schema = `
-  type Repo {
-    progress: Int
-    folder: String
+  type UserError {
+    message : String
   }
 
-  type Query {
-    repo(url : String): Repo
+  type Repo {
+    progress : Int
+    folder   : String
   }
+
+  union Result = Repo | UserError
+
+  type Query {
+    repo(url : String) : Result
+  }
+
   schema {
-    query: Query
+    query : Query
   }
 `
 
 const resolverMap = {
    Query: {
       repo(_, {url}) {
+         if (! isGitUrl(url)) {
+            return {message: 'Invalid git URL'}
+         }
          return {folder: repoToFolder(url), progress: 0}
       }
+   },
+   Result: {
+      __resolveType(root, context, info){
+         if (root.folder != null) {
+            return 'Repo'
+         } else if (root.message != null) {
+            return 'UserError'
+         }
+         return null;
+      },
    },
 }
 
