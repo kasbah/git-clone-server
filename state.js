@@ -9,14 +9,15 @@ type State = {
 type Action = {
     type: string,
     session_id: string,
-    value: any
+    value: string
 }
 
 type Session = {
-    repos: Immutable.List
+    repos: Immutable.Map<string, Repo>
 }
 
 type Repo = {
+    url: string,
     status: RepoStatus
 }
 
@@ -27,21 +28,22 @@ function reducer(state: State, action: Action): State {
     let session : ?Session = state.sessions.get(action.session_id)
     if (session == null) {
         session = {
-            repos: Immutable.List()
+            repos: Immutable.Map()
         }
     }
     session = reduceSession(session, action)
     const sessions = state.sessions.set(action.session_id, session)
-    return { sessions }
+    return {sessions}
 }
 
 
-function reduceSession(session, action) {
+function reduceSession(session: Session, action: Action) {
     switch(action.type) {
         case 'START_CLONE':
             const repo = session.repos.get(action.value)
             if (repo == null || repo.status == 'done') {
-                return {repos: session.repos.push({status: 'start'})}
+                const repos = session.repos.set(action.value, Object.assign(repo, {status: 'start'}))
+                return Object.assign(session, {repos})
             }
             return session
     }
