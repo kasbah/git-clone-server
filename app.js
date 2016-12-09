@@ -7,10 +7,10 @@ const isGitUrl   = require('is-git-url')
 const path       = require('path')
 const redux      = require('redux')
 const session    = require('express-session')
-const FileStore = require('session-file-store')(session);
+const FileStore  = require('session-file-store')(session);
 
-const maxAge = 60 * 60 * 1000 //ms
-const app = express()
+const maxAge       = 60 * 60 * 1000 //ms
+const app          = express()
 const sessionStore = new FileStore({reapSessions: maxAge / 1000})
 
 
@@ -67,10 +67,16 @@ app.post('/', function(req, res, next) {
     const isGit = isGitUrl(req.body.url)
     if (isGit) {
         const folder = repoToFolder(req.session.id, req.body.url)
-        store.dispatch({type:'ADD_SESSION', id:req.session.id, url:req.body.url})
+        store.dispatch({
+            type: 'ADD_SESSION',
+            id: req.session.id,
+            url: req.body.url
+        })
         let pid
         if (fs.existsSync(folder)) {
-            pid = cp.exec('git fetch && git reset --hard origin/HEAD', {cwd:folder})
+            pid = cp.exec('git fetch && git reset --hard origin/HEAD', {
+                cwd: folder
+            })
         }
         else {
             pid = cp.exec(`git clone --depth=1 ${req.body.url} ${folder}`)
