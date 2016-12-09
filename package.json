@@ -15,6 +15,7 @@
     "express-graphql": "^0.6.1",
     "express-session": "^1.14.0",
     "graphql": "^0.8.2",
+    "graphql-tools": "^0.8.3",
     "is-git-url": "github:kasbah/is-git-url#ssh-user-and-not-dot-git",
     "nodegit": "^0.14.1",
     "redux": "^3.5.2",

@@ -1,50 +1,37 @@
-var express         = require('express')
-var graphqlHTTP     = require('express-graphql')
-var { buildSchema } = require('graphql')
-const isGitUrl      = require('is-git-url')
+const express         = require('express')
+const graphqlHTTP     = require('express-graphql')
+const { buildSchema } = require('graphql')
+const isGitUrl        = require('is-git-url')
+const graphqlTools    = require('graphql-tools')
 
-var schema = buildSchema(`
-  union Result = Repo | UserError
-
+const schema = `
   type Repo {
     progress: Int
     folder: String
   }
 
-  type UserError {
-    message : String
-  }
-
   type Query {
-    repo(url : String): Result
+    repo(url : String): Repo
   }
+`
 
-
-`)
-
-class UserError {
-    constructor(message) {
-        this.message = message
-    }
+const resolverMap = {
+   Query: {
+      repo(url) {
+         console.log(url)
+         return {folder: '', progress: 0}
+      }
+   },
 }
 
-class Repo {
-    constructor(url) {
-        this.folder = repoToFolder(url)
-        this.progress = 0
-    }
-}
+const executableSchema = graphqlTools.makeExecutableSchema({
+    typeDefs: schema,
+    resolvers: resolverMap,
+})
 
-var root = {
-    repo: ({url}) => {
-        return new Repo(url)
-    },
-}
-
-var app = express()
+const app = express()
 app.use('/graphql', graphqlHTTP({
-    schema: schema,
-    rootValue: root,
+    schema: executableSchema,
     graphiql: true,
 }))
 app.listen(4000)
