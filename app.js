@@ -9,15 +9,15 @@ const redux      = require('redux')
 const session    = require('express-session')
 const FileStore  = require('session-file-store')(session);
 
-const maxAge       = 60 * 60 * 1000 //ms
+const maxAge       = 60 * 60 //seconds
 const app          = express()
-const sessionStore = new FileStore({reapSessions: maxAge / 1000})
+const sessionStore = new FileStore({reapSessions: maxAge})
 
 
 app.use(session({
     store: sessionStore,
     secret: 'keyboard cat',
-    cookie: { maxAge: maxAge }
+    cookie: { maxAge: maxAge * 1000 /*ms*/}
 }))
 
 function reducer (state = {}, action) {
