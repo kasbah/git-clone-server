@@ -13,13 +13,15 @@ const schema = `
   type Query {
     repo(url : String): Repo
   }
+  schema {
+    query: Query
+  }
 `
 
 const resolverMap = {
    Query: {
-      repo(url) {
-         console.log(url)
-         return {folder: '', progress: 0}
+      repo(_, {url}) {
+         return {folder: repoToFolder(url), progress: 0}
       }
    },
 }
