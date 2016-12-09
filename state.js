@@ -2,30 +2,49 @@
 const Immutable = require('immutable')
 const redux = require('redux')
 
-const initial_state = Immutable.Map({
-    sessions: Immutable.Map()
-})
+type State = {
+    sessions : Immutable.Map<string, Session>
+}
 
-function reducer(state = initial_state, action) {
-    let sessions = state.get('sessions')
-    let session = sessions.get(action.session_id)
+type Action = {
+    type: string,
+    session_id: string,
+    value: any
+}
+
+type Session = {
+    repos: Immutable.List
+}
+
+type Repo = {
+    status: RepoStatus
+}
+
+type RepoStatus = 'start' | 'in_progress' | 'done'
+
+
+function reducer(state: State, action: Action): State {
+    let session : ?Session = state.sessions.get(action.session_id)
     if (session == null) {
-        session = Immutable.Map({
+        session = {
             repos: Immutable.List()
-        })
+        }
     }
     session = reduceSession(session, action)
-    sessions = sessions.set(action.session_id, session)
-    return state.set('sessions', sessions)
+    const sessions = state.sessions.set(action.session_id, session)
+    return { sessions }
 }
 
 
 function reduceSession(session, action) {
     switch(action.type) {
-        case 'PREVIEW_LINK':
-            return
+        case 'START_CLONE':
+            const repo = session.repos.get(action.value)
+            if (repo == null || repo.status == 'done') {
+                return {repos: session.repos.push({status: 'start'})}
+            }
+            return session
     }
     return session
 }
 
-module.exports = redux.createStore(reducer, initial_state)
