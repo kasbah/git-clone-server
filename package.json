@@ -15,17 +15,19 @@
     "express": "^4.14.0",
     "express-graphql": "^0.6.1",
     "express-session": "^1.14.0",
-    "flow-remove-types": "^1.1.2",
-    "flow-typed": "^2.0.0",
-    "flowtype": "^2.0.0",
-    "global": "^4.3.1",
     "graphql": "^0.8.2",
     "graphql-tools": "^0.8.3",
     "immutable": "^3.8.1",
     "is-git-url": "github:kasbah/is-git-url#ssh-user-and-not-dot-git",
-    "nodegit": "^0.14.1",
     "redux": "^3.5.2",
     "session-file-store": "^0.2.1",
     "shortid": "^2.2.6"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "flow-bin": "^0.36.0",
+    "flow-remove-types": "^1.1.2",
+    "flow-typed": "^2.0.0",
+    "mocha": "^3.2.0"
   }
 }

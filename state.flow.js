@@ -6,11 +6,17 @@ type State = {
     sessions : Immutable.Map<string, Session>
 }
 
+const initial : State = {
+    sessions: Immutable.Map()
+}
+
 type Action = {
-    type: string,
+    type: ActionType,
     session_id: string,
     value: string
 }
+
+type ActionType = 'START_CLONE'
 
 type Session = {
     repos: Immutable.Map<string, Repo>
@@ -42,7 +48,7 @@ function reduceSession(session: Session, action: Action) {
         case 'START_CLONE':
             const repo = session.repos.get(action.value)
             if (repo == null || repo.status == 'done') {
-                const repos = session.repos.set(action.value, Object.assign(repo, {status: 'start'}))
+                const repos = session.repos.set(action.value, Object.assign(repo || {}, {status: 'start'}))
                 return Object.assign(session, {repos})
             }
             return session
@@ -50,3 +56,4 @@ function reduceSession(session: Session, action: Action) {
     return session
 }
 
+module.exports = {initial, reducer, reduceSession}
