@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "flow": "flow-remove-types src/ --out-dir lib",
+    "test": ""
   },
   "keywords": [],
   "author": "",

@@ -1,5 +1,5 @@
 const {expect} = require('chai')
-const state = require('./state')
+const state = require('../lib/state')
 
 describe('reducer', () => {
     it('should add a new session', (done) => {

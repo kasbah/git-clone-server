@@ -3,7 +3,7 @@ const Immutable = require('immutable')
 const redux = require('redux')
 
 type State = {
-    sessions : Immutable.Map<string, Session>
+    sessions : Immutable.Map<String, Session>
 }
 
 const initial : State = {
@@ -12,19 +12,14 @@ const initial : State = {
 
 type Action = {
     type: ActionType,
-    session_id: string,
-    value: string
+    session_id: String,
+    value: String
 }
 
 type ActionType = 'START_CLONE'
 
 type Session = {
-    repos: Immutable.Map<string, Repo>
-}
-
-type Repo = {
-    url: string,
-    status: RepoStatus
+    repos: Immutable.Map<String, RepoStatus>
 }
 
 type RepoStatus = 'start' | 'in_progress' | 'done'
@@ -47,8 +42,8 @@ function reduceSession(session: Session, action: Action) {
     switch(action.type) {
         case 'START_CLONE':
             const repo = session.repos.get(action.value)
-            if (repo == null || repo.status == 'done') {
-                const repos = session.repos.set(action.value, Object.assign(repo || {}, {status: 'start'}))
+            if (repo == null || repo == 'done') {
+                const repos = session.repos.set(action.value, 'start')
                 return Object.assign(session, {repos})
             }
             return session
