@@ -4,15 +4,29 @@ var { buildSchema } = require('graphql')
 const isGitUrl      = require('is-git-url')
 
 var schema = buildSchema(`
-  type Query {
-    repo(url : String): Repo | Error
-  }
+  union Result = Repo | UserError
 
   type Repo {
     progress: Int
     folder: String
   }
+
+  type UserError {
+    message : String
+  }
+
+  type Query {
+    repo(url : String): Result
+  }
+
+
 `)
+
+class UserError {
+    constructor(message) {
+        this.message = message
+    }
+}
 
 class Repo {
     constructor(url) {
