@@ -1,5 +1,5 @@
 const express         = require('express')
-const graphqlHTTP     = require('express-graphql')
+const expressGraphql  = require('express-graphql')
 const { buildSchema } = require('graphql')
 const isGitUrl        = require('is-git-url')
 const graphqlTools    = require('graphql-tools')
@@ -20,6 +20,7 @@ const schema = `
 
     type Query {
         repo(url : String) : Result
+        me : String!
     }
 
     schema {
@@ -29,11 +30,14 @@ const schema = `
 
 const resolverMap = {
    Query: {
-       repo(_, {url}) {
+       repo({session}, {url}) {
            if (! isGitUrl(url)) {
                return {message: 'Invalid git URL'}
            }
            return {folder: repoToFolder(url), progress: 0}
+       },
+       me({session}) {
+           return session.id
        }
    },
    Result: {
@@ -54,26 +58,39 @@ const executableSchema = graphqlTools.makeExecutableSchema({
 })
 
 const app = express()
-app.use('/graphql', graphqlHTTP({
-    schema: executableSchema,
-    graphiql: true,
-}))
-app.use(cookieSession({
+
+const session = cookieSession({
     name: 'session',
-    keys: ['keep.emsu.pers.ecret'],
+    keys: ['secret squirrel'],
 
     // Cookie Options
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
-}))
-app.listen(4000)
-console.log('Running a GraphQL API server at localhost:4000/graphql')
+})
 
-app.get('/*', function(req, res, next) {
-    if (! req.session.id) {
+app.use(session)
+
+app.all('*', (req, res, next) =>  {
+    if (req.session.id == null) {
         req.session.id = shortid.generate()
     }
-    return res.send('hey')
+    return next()
 })
+
+app.get('/', (req, res) =>  {
+    return res.send(req.session.id)
+})
+
+app.use('/graphql', expressGraphql((req) =>  {
+   return {
+       schema: executableSchema,
+       graphiql: true,
+       rootValue: { session: req.session },
+   }
+}))
+
+
+app.listen(4000)
+console.log('Running a GraphQL API server at localhost:4000/graphql')
 
 function repoToFolder(repoURL)  {
     let folder = repoURL.replace(/^http:\/\//,'')
