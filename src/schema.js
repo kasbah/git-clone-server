@@ -1,3 +1,4 @@
+//@flow
 const graphqlTools = require('graphql-tools')
 const isGitUrl     = require('is-git-url')
 
