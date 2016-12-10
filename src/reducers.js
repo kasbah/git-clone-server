@@ -11,7 +11,7 @@ const initial_state : State = {
 }
 
 type Action = {
-    type: String,
+    type: ActionType,
     session_id: String,
     value: String
 }
@@ -24,7 +24,7 @@ type Session = {
 type RepoStatus = 'start' | 'in_progress' | 'done'
 
 const reducers = {
-    startClone(session, value) {
+    startClone(session : Session, value : String) {
         const repo = session.repos.get(value)
         if (repo == null || repo == 'done') {
             const repos = session.repos.set(value, 'start')
@@ -34,8 +34,10 @@ const reducers = {
     }
 }
 
+type ActionType = $Keys<typeof reducers>
 
-function reducer(state: State, action: Action): State {
+
+function mainReducer(state: State, action: Action): State {
     if (state == null) {
         state = initial_state
     }
@@ -53,4 +55,4 @@ function reducer(state: State, action: Action): State {
 }
 
 
-module.exports = {reducers, reducer, initial_state}
+module.exports = {reducers, mainReducer, initial_state}
