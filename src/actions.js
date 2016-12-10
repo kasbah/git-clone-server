@@ -12,8 +12,8 @@ function makeActions(store) {
         }
     })
     Object.keys(stateReducers).forEach(name => {
-        actions[name] = function actionDispatch(session_id, value) {
-            return store.dispatch({type: name, session_id, value})
+        actions[name] = function actionDispatch(value) {
+            return store.dispatch({type: name, value})
         }
     })
     return actions

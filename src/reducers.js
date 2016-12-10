@@ -44,11 +44,7 @@ const stateReducers = {
 
 type ActionType = $Keys<typeof sessionReducers> | $Keys<typeof stateReducers>
 
-
-function mainReducer(state: ?State, action: Action): State {
-    if (state == null) {
-        state = initial_state
-    }
+function reduceSessions(state: State, action: Action) {
     if (action.session_id == null) {
         return state
     }
@@ -65,21 +61,25 @@ function mainReducer(state: ?State, action: Action): State {
         return session
     }, session)
     const sessions = state.get('sessions').set(action.session_id, session)
-    state = state.set('sessions', sessions)
+    return state.set('sessions', sessions)
+}
+
+function reduceState(state: State, action: Action) {
     state = Object.keys(stateReducers).reduce((state, name) => {
         if (name == action.type) {
-            let value
-            if (action.value == null) {
-                value = action.session_id
-            } else {
-                value = action.value
-            }
-            return stateReducers[name](state, value)
+            return stateReducers[name](state, action.value)
         }
         return state
     }, state)
     return state
+}
 
+function mainReducer(state: ?State, action: Action): State {
+    if (state == null) {
+        state = initial_state
+    }
+    state = reduceSessions(state, action)
+    return reduceState(state, action)
 }
 
 
