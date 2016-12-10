@@ -26,9 +26,9 @@ describe('api' , () => {
       expect(response1.success).to.be.ok
       expect(response1.status).to.equal(200)
       test('{sessionId}').then(response2 => {
-        expect(response1.success).to.be.ok
-        expect(response1.status).to.equal(200)
-        expect(response1.data.sessionId).to.not.equal(response2.data.sessionId)
+        expect(response2.success).to.be.ok
+        expect(response2.status).to.equal(200)
+        expect(response2.data.sessionId).to.not.equal(response1.data.sessionId)
         return done()
       })
     })
