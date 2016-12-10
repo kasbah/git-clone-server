@@ -1,11 +1,11 @@
 //@flow
 const redux = require('redux')
-const {mainReducer, reducers} = require('./reducers')
+const {mainReducer, sessionReducers} = require('./reducers')
 
-//creates an actions object that dispatches with method names from `reducers`
+//creates an actions object that dispatches with method names from `sessionReducers`
 function makeActions(store) {
     const actions = {}
-    Object.keys(reducers).forEach(name => {
+    Object.keys(sessionReducers).forEach(name => {
         actions[name] = function actionDispatch(session_id, value) {
             return store.dispatch({type: name, session_id, value})
         }

@@ -1,7 +1,7 @@
 const {expect} = require('chai')
 const redux = require('redux')
 
-const {mainReducer, reducers} = require('../lib/reducers')
+const {mainReducer} = require('../lib/reducers')
 const {makeActions} = require('../lib/actions')
 
 describe('actions', () => {

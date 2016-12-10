@@ -24,7 +24,7 @@ type Session = {
 
 type RepoStatus = 'start' | 'in_progress' | 'done'
 
-const reducers = {
+const sessionReducers = {
     startClone(session : Session, repo_folder : string) {
         const repo = session.repos.get(repo_folder)
         if (repo == null || repo === 'done') {
@@ -35,7 +35,7 @@ const reducers = {
     }
 }
 
-type ActionType = $Keys<typeof reducers>
+type ActionType = $Keys<typeof sessionReducers>
 
 
 function mainReducer(state: ?State, action: Action): State {
@@ -51,12 +51,12 @@ function mainReducer(state: ?State, action: Action): State {
             repos: Immutable.Map()
         }
     }
-    session = Object.keys(reducers).reduce((session, name) => {
-        return reducers[name](session, action.value)
+    session = Object.keys(sessionReducers).reduce((session, name) => {
+        return sessionReducers[name](session, action.value)
     }, session)
     const sessions = state.get('sessions').set(action.session_id, session)
     return state.set('sessions', sessions)
 }
 
 
-module.exports = {reducers, mainReducer, initial_state}
+module.exports = {sessionReducers, mainReducer, initial_state}
