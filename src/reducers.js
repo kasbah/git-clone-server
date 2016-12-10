@@ -25,10 +25,10 @@ type Session = {
 type RepoStatus = 'start' | 'in_progress' | 'done'
 
 const reducers = {
-    startClone(session : Session, value : string) {
-        const repo = session.repos.get(value)
+    startClone(session : Session, repo_folder : string) {
+        const repo = session.repos.get(repo_folder)
         if (repo == null || repo == 'done') {
-            const repos = session.repos.set(value, 'start')
+            const repos = session.repos.set(repo_folder, 'start')
             return Object.assign(session, {repos})
         }
         return session

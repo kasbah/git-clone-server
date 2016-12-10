@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "flow": "rm -rf lib && flow-remove-types src/ --out-dir lib",
+    "flow": "flow && rm -rf lib && flow-remove-types src/ --out-dir lib",
     "test": "yarn run flow && mocha"
   },
   "keywords": [],
