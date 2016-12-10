@@ -14,4 +14,16 @@ describe('api' , () => {
       return done()
     })
   })
+  it('should give out unique session ids', done => {
+    test('{sessionId}').then(response1 => {
+      expect(response1.success).to.be.ok
+      expect(response1.status).to.equal(200)
+      test('{sessionId}').then(response2 => {
+        expect(response1.success).to.be.ok
+        expect(response1.status).to.equal(200)
+        expect(response1.data.sessionId).to.not.equal(response2.data.sessionId)
+        return done()
+      })
+    })
+  })
 })
