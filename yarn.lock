@@ -524,9 +524,16 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.1.9:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
-graphql-tester@^0.0.5:
+"graphql-tester@https://github.com/kasbah/graphql-tester#request-options":
   version "0.0.5"
-  resolved "https://registry.yarnpkg.com/graphql-tester/-/graphql-tester-0.0.5.tgz#570c2f114c319ac1389c4312796db39d5223af65"
+  resolved "https://github.com/kasbah/graphql-tester#0782c0142c4129a3bfad5c921d1df7c7939c2df0"
+  dependencies:
+    freeport "^1.0.5"
+    request "^2.69.0"
+
+"graphql-tester@https://github.com/kasbah/graphql-tester#request-options-built":
+  version "0.0.5"
+  resolved "https://github.com/kasbah/graphql-tester#77e98e828576eea5475f5347c4fa3f1bf8ef732e"
   dependencies:
     freeport "^1.0.5"
     request "^2.69.0"
