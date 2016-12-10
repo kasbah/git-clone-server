@@ -15,7 +15,7 @@ const schema = `
 
     type Query {
         repo(url : String) : Result
-        me : String!
+        sessionId : String!
     }
 
     type Mutation {
@@ -31,7 +31,7 @@ const resolverMap = {
            }
            return {folder: repoToFolder(url), progress: 0}
        },
-       me({session}) {
+       sessionId({session}) {
            return session.id
        }
    },
