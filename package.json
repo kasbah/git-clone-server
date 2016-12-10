@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "flow": "flow-remove-types src/ --out-dir lib",
-    "test": ""
+    "test": "yarn run flow && mocha"
   },
   "keywords": [],
   "author": "",
