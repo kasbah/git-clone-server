@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test:integration": "mocha integration/integration.js",
-    "start": "yarn run flow && node lib/server.js",
+    "prestart": "yarn run flow",
+    "start": "node lib/server.js",
     "flow": "flow && rm -f lib/*.js && flow-remove-types src/ --out-dir lib",
-    "test": "yarn run flow && mocha"
+    "pretest": "yarn run flow",
+    "test": "mocha"
   },
   "keywords": [],
   "author": "",
