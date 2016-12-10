@@ -1,11 +1,31 @@
-const graphqlTester = require('graphql-tester')
-const {expect} = require('chai')
-
-const test = graphqlTester.tester({
-  url: 'http://localhost:4000/graphql'
-})
+const graphqlTester  = require('graphql-tester')
+const expressGraphql = require('express-graphql')
+const {expect}       = require('chai')
+const cookieSession  = require('cookie-session')
+const express        = require('express')
+const schema         = require('../lib/schema')
+const createExpressWrapper = require('graphql-tester/lib/main/servers/express.js').create
 
 describe('api' , () => {
+  const app = express()
+  const session = cookieSession({
+      name: 'session',
+      keys: ['secret squirrel'],
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  })
+  app.use(session)
+  app.use('/graphql', expressGraphql((req) =>  {
+     return {
+         schema,
+         graphiql: true,
+         rootValue: { session: req.session },
+     }
+  }))
+  const test = graphqlTester.tester({
+    server: createExpressWrapper(app),
+    url: '/graphql'
+  })
+
   it('responds with session id', done => {
     test('{sessionId}').then(response => {
       expect(response.success).to.be.ok
