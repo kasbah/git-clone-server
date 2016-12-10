@@ -23,8 +23,13 @@ const schema = `
         me : String!
     }
 
+    type Mutation {
+        addRepo(url : String) : Result
+    }
+
     schema {
         query : Query
+        mutation : Mutation
     }
 `
 
@@ -39,6 +44,14 @@ const resolverMap = {
        me({session}) {
            return session.id
        }
+   },
+   Mutation: {
+       addRepo({session}, {url}) {
+           if (! isGitUrl(url)) {
+               return {message: 'Invalid git URL'}
+           }
+           return {folder: repoToFolder(url), progress: 0}
+       },
    },
    Result: {
       __resolveType(root, context, info){
