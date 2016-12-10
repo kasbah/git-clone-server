@@ -42,7 +42,7 @@ function mainReducer(state: ?State, action: Action): State {
     if (state == null) {
         state = initial_state
     }
-    if (action.type == '@@redux/INIT') {
+    if (action.session_id == null) {
         return state
     }
     let session : ?Session = state.get('sessions').get(action.session_id)
@@ -55,7 +55,7 @@ function mainReducer(state: ?State, action: Action): State {
         return reducers[name](session, action.value)
     }, session)
     const sessions = state.get('sessions').set(action.session_id, session)
-    return Immutable.Map({sessions})
+    return state.set('sessions', sessions)
 }
 
 
