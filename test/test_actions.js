@@ -40,7 +40,7 @@ describe('actions', () => {
         const state2 = store.getState()
         expect(state1.get('sessions').size).to.equal(0)
         expect(state2.get('sessions').size).to.equal(1)
-        actions.removeSession(session_id, session_id)
+        actions.removeSession(session_id)
         const state3 = store.getState()
         expect(state2.get('sessions').size).to.equal(1)
         expect(state3.get('sessions').size).to.equal(0)

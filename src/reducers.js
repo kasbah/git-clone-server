@@ -68,7 +68,13 @@ function mainReducer(state: ?State, action: Action): State {
     state = state.set('sessions', sessions)
     state = Object.keys(stateReducers).reduce((state, name) => {
         if (name == action.type) {
-            return stateReducers[name](state, action.value)
+            let value
+            if (action.value == null) {
+                value = action.session_id
+            } else {
+                value = action.value
+            }
+            return stateReducers[name](state, value)
         }
         return state
     }, state)
