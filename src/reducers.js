@@ -77,4 +77,4 @@ function mainReducer(state: ?State, action: Action): State {
 }
 
 
-module.exports = {sessionReducers, mainReducer, initial_state}
+module.exports = {sessionReducers, stateReducers, mainReducer, initial_state}
