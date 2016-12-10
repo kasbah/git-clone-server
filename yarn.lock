@@ -446,6 +446,10 @@ forwarded@~0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.1.0.tgz#19ef9874c4ae1c297bcf078fde63a09b66a84363"
 
+freeport@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/freeport/-/freeport-1.0.5.tgz#255e8ab84170c33ba85d990e821ae5f4a1a9bc5d"
+
 fresh@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.3.0.tgz#651f838e22424e7566de161d8358caa199f83d4f"
@@ -519,6 +523,13 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.1.9:
 "graceful-readlink@>= 1.0.0":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
+
+graphql-tester@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/graphql-tester/-/graphql-tester-0.0.5.tgz#570c2f114c319ac1389c4312796db39d5223af65"
+  dependencies:
+    freeport "^1.0.5"
+    request "^2.69.0"
 
 graphql-tools@^0.8.3:
   version "0.8.3"

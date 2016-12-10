@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test:integration": "mocha integration/integration.js",
     "start": "yarn run flow && node lib/server.js",
     "flow": "flow && rm -f lib/*.js && flow-remove-types src/ --out-dir lib",
     "test": "yarn run flow && mocha"
@@ -18,6 +19,7 @@
     "express-graphql": "^0.6.1",
     "express-session": "^1.14.0",
     "graphql": "^0.8.2",
+    "graphql-tester": "^0.0.5",
     "graphql-tools": "^0.8.3",
     "immutable": "^3.8.1",
     "is-git-url": "github:kasbah/is-git-url#ssh-user-and-not-dot-git",

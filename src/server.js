@@ -1,6 +1,5 @@
 const express        = require('express')
 const expressGraphql = require('express-graphql')
-const isGitUrl       = require('is-git-url')
 const cookieSession  = require('cookie-session')
 const shortid        = require('shortid')
 
