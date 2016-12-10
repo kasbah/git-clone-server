@@ -35,22 +35,29 @@ type UserError = {
    message: string
 }
 
+function getStatus(session_id, url) {
+     const state = store.getState().get('sessions').get(session_id)
+     if (state == null) {
+         return null
+     }
+     return state.repos.get(url)
+}
+
 const resolverMap = {
    Query: {
        repo({session}, {url}): Repo | UserError {
            if (! isGitUrl(url)) {
                return {message: 'Invalid git URL'}
            }
-           const state = store.getState().get('sessions').get(session.id)
-           if (state == null) {
-              return {message: 'Invalid session'}
+           const status = getStatus(session.id, url)
+           if (status == null) {
+               return {message: 'Invalid session'}
            }
-           const status = state.repos.get(url)
            return {status}
        },
        sessionId({session}) {
            return session.id
-       }
+       },
    },
    Mutation: {
        addRepo({session}, {url}): Repo | UserError {
@@ -58,7 +65,8 @@ const resolverMap = {
                return {message: 'Invalid git URL'}
            }
            actions.startClone(session.id, url)
-           return {status: 'start'}
+           const status = getStatus(session.id, url) || 'start'
+           return {status}
        },
    },
    Result: {
