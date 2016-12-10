@@ -10,7 +10,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "CPAL-1.0",
   "dependencies": {
     "body-parser": "^1.15.2",
     "cookie-session": "^2.0.0-alpha.2",
@@ -30,6 +30,7 @@
     "flow-bin": "^0.36.0",
     "flow-remove-types": "^1.1.2",
     "flow-typed": "^2.0.0",
+    "graph-spec": "^0.1.5",
     "mocha": "^3.2.0"
   }
 }

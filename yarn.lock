@@ -520,6 +520,12 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.1.9:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
+graph-spec@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/graph-spec/-/graph-spec-0.1.5.tgz#d83e397a9346acecaae2b11083f21856f6aac4b3"
+  dependencies:
+    deep-eql "^0.1.3"
+
 graphql-tools@^0.8.3:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/graphql-tools/-/graphql-tools-0.8.3.tgz#7766ec1d1cc716dde331bd7813267bda44aefa08"

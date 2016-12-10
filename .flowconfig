@@ -1,5 +1,6 @@
 [ignore]
 .*/node_modules/graphql/language/parser.js.flow
+.*/node_modules/graph-spec/test/index.js
 
 [include]
 
