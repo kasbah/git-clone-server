@@ -5,7 +5,7 @@ const {mainReducer} = require('../lib/reducers')
 const {makeActions} = require('../lib/actions')
 
 describe('actions', () => {
-    it('should not mutate state', done => {
+    it('does not mutate state', done => {
         const store      = redux.createStore(mainReducer)
         const actions    = makeActions(store)
         const session_id = 'id'
@@ -16,7 +16,7 @@ describe('actions', () => {
         expect(state1.get('sessions').size).to.equal(0)
         done()
     })
-    it('should dispatch', done => {
+    it('dispatches', done => {
         const store      = redux.createStore(mainReducer)
         const actions    = makeActions(store)
         const session_id = 'id'
@@ -29,7 +29,7 @@ describe('actions', () => {
         expect(state2.get('sessions').size).to.equal(1)
         done()
     })
-    it('should remove session', done => {
+    it('removes session', done => {
         const store      = redux.createStore(mainReducer)
         const actions    = makeActions(store)
         const session_id = 'id'

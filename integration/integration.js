@@ -6,7 +6,7 @@ const test = graphqlTester.tester({
 })
 
 describe('api' , () => {
-  it('should respond with session id', done => {
+  it('responds with session id', done => {
     test('{sessionId}').then(response => {
       expect(response.success).to.be.ok
       expect(response.status).to.equal(200)
@@ -14,7 +14,7 @@ describe('api' , () => {
       return done()
     })
   })
-  it('should give out unique session ids', done => {
+  it('gives out unique session ids', done => {
     test('{sessionId}').then(response1 => {
       expect(response1.success).to.be.ok
       expect(response1.status).to.equal(200)
