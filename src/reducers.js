@@ -18,21 +18,31 @@ type Action = {
 }
 
 
-type Session = {
-    repos: Immutable.Map<string, RepoStatus>
-}
+//type Session = {
+//    repos: Immutable.Map<string, RepoStatus>
+//}
+type Session = Immutable.Map<string, *>
 
 type RepoStatus = 'start' | 'in_progress' | 'done' | 'invalid'
 
 const sessionReducers = {
-    startClone(session : Session, repo_folder : string) {
-        const repo = session.repos.get(repo_folder)
-        if (repo == null || repo === 'done') {
-            const repos = session.repos.set(repo_folder, 'start')
-            return Object.assign(session, {repos})
+    startClone(session : Session, url: string) {
+        const status = session.get('repos').get(url)
+        if (status == null || status === 'done') {
+            const repos = session.get('repos').set(url, 'start')
+            return session.set('repos', repos)
         }
         return session
-    }
+    },
+    registerStarted(session: Session, url: string) {
+        const status = session.get('repos').get(url)
+        if (status === 'start') {
+            const repos = session.get('repos').set(url, 'in_progress')
+            return session.set('repos', repos)
+        }
+        return session
+    },
+
 }
 
 const stateReducers = {
@@ -50,9 +60,9 @@ function reduceSessions(sessions: Immutable.Map<string, Session>, action: Action
     }
     let session : ?Session = sessions.get(action.session_id)
     if (session == null) {
-        session = {
+        session = Immutable.Map({
             repos: Immutable.Map()
-        }
+        })
     }
     session = Object.keys(sessionReducers).reduce((session, name) => {
         if (name == action.type) {

@@ -40,7 +40,7 @@ function getStatus(session_id, url) {
      if (state == null) {
          return null
      }
-     return state.repos.get(url)
+     return state.get('repos').get(url)
 }
 
 const resolverMap = {

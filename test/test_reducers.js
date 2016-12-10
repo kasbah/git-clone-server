@@ -27,7 +27,7 @@ describe('mainReducer', () => {
         const session_id = 'id'
         const value = 'value'
         const state = mainReducer(initial_state, {type: 'startClone', session_id, value})
-        expect(state.get('sessions').get(session_id).repos.get(value)).to.equal('start')
+        expect(state.get('sessions').get(session_id).get('repos').get(value)).to.equal('start')
         return done()
     })
     it('removes a session', done => {
