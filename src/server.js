@@ -1,6 +1,5 @@
 const express         = require('express')
 const expressGraphql  = require('express-graphql')
-const { buildSchema } = require('graphql')
 const isGitUrl        = require('is-git-url')
 const graphqlTools    = require('graphql-tools')
 const cookieSession   = require('cookie-session')
@@ -25,11 +24,6 @@ const schema = `
 
     type Mutation {
         addRepo(url : String) : Result
-    }
-
-    schema {
-        query : Query
-        mutation : Mutation
     }
 `
 
