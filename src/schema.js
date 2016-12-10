@@ -1,10 +1,5 @@
-const express         = require('express')
-const expressGraphql  = require('express-graphql')
-const { buildSchema } = require('graphql')
-const isGitUrl        = require('is-git-url')
-const graphqlTools    = require('graphql-tools')
-const cookieSession   = require('cookie-session')
-const shortid         = require('shortid')
+const graphqlTools = require('graphql-tools')
+const isGitUrl     = require('is-git-url')
 
 const schema = `
    type UserError {
@@ -26,7 +21,6 @@ const schema = `
     type Mutation {
         addRepo(url : String) : Result
     }
-
 `
 
 const resolverMap = {
@@ -61,44 +55,6 @@ const resolverMap = {
    },
 }
 
-const executableSchema = graphqlTools.makeExecutableSchema({
-    typeDefs: schema,
-    resolvers: resolverMap,
-})
-
-const app = express()
-
-const session = cookieSession({
-    name: 'session',
-    keys: ['secret squirrel'],
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-})
-
-app.use(session)
-
-app.all('*', (req, res, next) =>  {
-    if (req.session.id == null) {
-        req.session.id = shortid.generate()
-    }
-    return next()
-})
-
-app.get('/', (req, res) =>  {
-    return res.send(req.session.id)
-})
-
-app.use('/graphql', expressGraphql((req) =>  {
-   return {
-       schema: executableSchema,
-       graphiql: true,
-       rootValue: { session: req.session },
-   }
-}))
-
-
-app.listen(4000)
-console.log('Running a GraphQL API server at localhost:4000/graphql')
-
 function repoToFolder(repoURL)  {
     let folder = repoURL.replace(/^http:\/\//,'')
     folder = folder.replace(/^https:\/\//,'')
@@ -106,3 +62,8 @@ function repoToFolder(repoURL)  {
     folder = folder.replace(/^.+?@/,'')
     return folder.replace(/:/,'/')
 }
+
+module.exports = graphqlTools.makeExecutableSchema({
+    typeDefs: schema,
+    resolvers: resolverMap,
+})
