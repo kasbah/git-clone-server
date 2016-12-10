@@ -30,4 +30,13 @@ describe('mainReducer', () => {
         expect(state.get('sessions').get(session_id).repos.get(value)).to.equal('start')
         return done()
     })
+    it('should remove a session', done => {
+        const session_id = 'id'
+        const value = 'value'
+        const state1 = mainReducer(initial_state, {type: 'startClone', session_id, value})
+        expect(state1.get('sessions').size).to.equal(1)
+        const state2 = mainReducer(initial_state, {type: 'removeSession', session_id,  value:session_id})
+        expect(state2.get('sessions').size).to.equal(0)
+        return done()
+    })
 })
