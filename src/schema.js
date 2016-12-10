@@ -2,14 +2,17 @@
 const graphqlTools = require('graphql-tools')
 const isGitUrl     = require('is-git-url')
 
+const {actions, store} = require('./actions')
+
+import type {RepoStatus} from './reducers'
+
 const schema = `
    type UserError {
        message : String
    }
 
     type Repo {
-        progress : Int
-        folder   : String
+        status   : String
     }
 
     union Result = Repo | UserError
@@ -24,29 +27,43 @@ const schema = `
     }
 `
 
+type Repo = {
+   status: RepoStatus
+}
+
+type UserError = {
+   message: string
+}
+
 const resolverMap = {
    Query: {
-       repo({session}, {url}) {
+       repo({session}, {url}): Repo | UserError {
            if (! isGitUrl(url)) {
                return {message: 'Invalid git URL'}
            }
-           return {folder: repoToFolder(url), progress: 0}
+           const state = store.getState().get('sessions').get(session.id)
+           if (state == null) {
+              return {message: 'Invalid session'}
+           }
+           const status = state.repos.get(url)
+           return {status}
        },
        sessionId({session}) {
            return session.id
        }
    },
    Mutation: {
-       addRepo({session}, {url}) {
+       addRepo({session}, {url}): Repo | UserError {
            if (! isGitUrl(url)) {
                return {message: 'Invalid git URL'}
            }
-           return {folder: repoToFolder(url), progress: 0}
+           actions.startClone(session.id, url)
+           return {status: 'start'}
        },
    },
    Result: {
       __resolveType(root, context, info){
-          if (root.folder != null) {
+          if (root.status != null) {
               return 'Repo'
           } else if (root.message != null) {
               return 'UserError'

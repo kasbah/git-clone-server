@@ -22,7 +22,7 @@ type Session = {
     repos: Immutable.Map<string, RepoStatus>
 }
 
-type RepoStatus = 'start' | 'in_progress' | 'done'
+type RepoStatus = 'start' | 'in_progress' | 'done' | 'invalid'
 
 const sessionReducers = {
     startClone(session : Session, repo_folder : string) {
@@ -84,3 +84,5 @@ function mainReducer(state: ?State, action: Action): State {
 
 
 module.exports = {sessionReducers, stateReducers, mainReducer, initial_state}
+
+export type {ActionType, RepoStatus}
