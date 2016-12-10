@@ -44,11 +44,11 @@ const stateReducers = {
 
 type ActionType = $Keys<typeof sessionReducers> | $Keys<typeof stateReducers>
 
-function reduceSessions(state: State, action: Action) {
+function reduceSessions(sessions: Immutable.Map<string, Session>, action: Action) {
     if (action.session_id == null) {
-        return state
+        return sessions
     }
-    let session : ?Session = state.get('sessions').get(action.session_id)
+    let session : ?Session = sessions.get(action.session_id)
     if (session == null) {
         session = {
             repos: Immutable.Map()
@@ -60,8 +60,7 @@ function reduceSessions(state: State, action: Action) {
         }
         return session
     }, session)
-    const sessions = state.get('sessions').set(action.session_id, session)
-    return state.set('sessions', sessions)
+    return sessions.set(action.session_id, session)
 }
 
 function reduceState(state: State, action: Action) {
@@ -78,7 +77,8 @@ function mainReducer(state: ?State, action: Action): State {
     if (state == null) {
         state = initial_state
     }
-    state = reduceSessions(state, action)
+    const sessions = state.get('sessions')
+    state = state.set('sessions', reduceSessions(sessions, action))
     return reduceState(state, action)
 }
 
