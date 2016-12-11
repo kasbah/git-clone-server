@@ -40,19 +40,31 @@ function startClone(id, url) {
     const folder = urlToFolder(id, url)
     return fs.exists(folder, exists => {
         if (exists) {
-            return actions.reportCloneStatus(id, {url, status:'done'})
+            return pull(id, url, folder)
         } else {
-            cp.exec(`git clone --depth=1 ${url} ${folder}`)
-                .on('exit', processStatus => {
-                    if (processStatus !== 0) {
-                        actions.reportCloneStatus(id, {url, status:'invalid'})
-                    } else {
-                        actions.reportCloneStatus(id, {url, status:'done'})
-                    }
-                })
-            return actions.reportCloneStatus(id, {url, status:'in_progress'})
+            return clone(id, url, folder)
         }
     })
+}
+
+function pull(id, url, folder) {
+    cp.exec(`cd ${folder} && git pull`)
+        .on('exit', reportStatus.bind(null, id, url))
+    return actions.reportCloneStatus(id, {url, status:'in_progress'})
+}
+
+function clone(id, url, folder) {
+    cp.exec(`git clone --depth=1 ${url} ${folder}`)
+        .on('exit', reportStatus.bind(null, id, url))
+    return actions.reportCloneStatus(id, {url, status:'in_progress'})
+}
+
+function reportStatus(id, url, processStatus) {
+    if (processStatus !== 0) {
+        actions.reportCloneStatus(id, {url, status:'invalid'})
+    } else {
+        actions.reportCloneStatus(id, {url, status:'done'})
+    }
 }
 
 function urlToFolder(id, url) {
