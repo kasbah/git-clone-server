@@ -35,7 +35,7 @@ type UserError = {
    message: string
 }
 
-function getStatus(session_id, url) {
+function getRepo(session_id, url) {
      const state = store.getState().get('sessions').get(session_id)
      if (state == null) {
          return null
@@ -49,10 +49,11 @@ const resolverMap = {
            if (! isGitUrl(url)) {
                return {message: 'Invalid git URL'}
            }
-           const status = getStatus(session.id, url)
-           if (status == null) {
+           const repo = getRepo(session.id, url)
+           if (repo == null) {
                return {message: 'Invalid session'}
            }
+           const status = repo.get('status')
            return {status}
        },
        sessionId({session}) {
@@ -65,7 +66,11 @@ const resolverMap = {
                return {message: 'Invalid git URL'}
            }
            actions.startClone(session.id, url)
-           const status = getStatus(session.id, url) || 'start'
+           const repo = getRepo(session.id, url)
+           if (repo == null) {
+               return {message: 'Invalid session'}
+           }
+           const status = repo.get('status') || 'start'
            return {status}
        },
    },
@@ -79,14 +84,6 @@ const resolverMap = {
           return null;
       },
    },
-}
-
-function repoToFolder(repoURL)  {
-    let folder = repoURL.replace(/^http:\/\//,'')
-    folder = folder.replace(/^https:\/\//,'')
-    folder = folder.replace(/^git:\/\//,'')
-    folder = folder.replace(/^.+?@/,'')
-    return folder.replace(/:/,'/')
 }
 
 module.exports = graphqlTools.makeExecutableSchema({

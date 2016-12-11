@@ -1,6 +1,7 @@
 //@flow
 const Immutable = require('immutable')
 const redux = require('redux')
+const crypto = require('crypto')
 
 //type State = {
 //    sessions : Immutable.Map<string, Session>
@@ -14,14 +15,18 @@ const initial_state : State = Immutable.Map({
 type Action = {
     type: ActionType,
     session_id: string,
-    value: string
+    value: *
 }
+
+type ActionValue = string | {url: string, status: RepoStatus}
 
 
 //type Session = {
 //    repos: Immutable.Map<string, RepoStatus>
 //}
-type Session = Immutable.Map<string, *>
+type Session = Immutable.Map<string, Repo>
+
+type Repo = Immutable.Map<string, *>
 
 type RepoStatus = 'start' | 'in_progress' | 'done' | 'invalid'
 
@@ -29,18 +34,15 @@ const sessionReducers = {
     startClone(session : Session, url: string) {
         const status = session.get('repos').get(url)
         if (status == null || status === 'done') {
-            const repos = session.get('repos').set(url, 'start')
+            const repos = session.get('repos').set(url, Immutable.Map({status: 'start'}))
             return session.set('repos', repos)
         }
         return session
     },
-    registerStarted(session: Session, url: string) {
-        const status = session.get('repos').get(url)
-        if (status === 'start') {
-            const repos = session.get('repos').set(url, 'in_progress')
-            return session.set('repos', repos)
-        }
-        return session
+    reportCloneStatus(session: Session, {url, status}: {url: string, status: RepoStatus}) {
+        const repos = session.get('repos')
+        const repo = repos.get(url).set('status', status)
+        return session.set('repos', repos.set(url, repo))
     },
 
 }
@@ -95,4 +97,4 @@ function mainReducer(state: ?State, action: Action): State {
 
 module.exports = {sessionReducers, stateReducers, mainReducer, initial_state}
 
-export type {ActionType, RepoStatus}
+export type {ActionType, ActionValue, RepoStatus}

@@ -2,17 +2,19 @@
 const redux = require('redux')
 const {mainReducer, sessionReducers, stateReducers} = require('./reducers')
 
+import type {ActionValue} from './reducers'
+
 //creates an actions object that dispatches with method names from `sessionReducers`
 //and `stateReducers`
 function makeActions(store) {
     const actions = {}
     Object.keys(sessionReducers).forEach(name => {
-        actions[name] = function actionDispatch(session_id, value) {
+        actions[name] = function actionDispatch(session_id, value : ActionValue) {
             return store.dispatch({type: name, session_id, value})
         }
     })
     Object.keys(stateReducers).forEach(name => {
-        actions[name] = function actionDispatch(value) {
+        actions[name] = function actionDispatch(value : ActionValue) {
             return store.dispatch({type: name, value})
         }
     })
