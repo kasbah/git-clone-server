@@ -28,14 +28,14 @@ type Session = Immutable.Map<string, Repo>
 
 type Repo = Immutable.Map<string, *>
 
-type RepoStatus = 'start' | 'in_progress' | 'done' | 'invalid'
+type RepoStatus = 'start' | 'cloning' | 'clone_done' | 'clone_failed'
 
 type ActionType = $Keys<typeof sessionReducers> | $Keys<typeof stateReducers>
 
 const sessionReducers = {
     startClone(session : Session, url: string) {
         const repo = session.get('repos').get(url)
-        if (repo == null || repo.get('status') === 'done' || repo.get('status') === 'invalid') {
+        if (repo == null || repo.get('status') === 'clone_done' || repo.get('status') === 'clone_failed') {
             const repos = session.get('repos').set(url, Immutable.Map({status: 'start'}))
             return session.set('repos', repos)
         }

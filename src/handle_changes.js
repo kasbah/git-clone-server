@@ -49,20 +49,20 @@ function startClone(id, url) {
 function pull(id, url, folder) {
     cp.exec(`cd ${folder} && git pull`)
         .on('exit', reportStatus.bind(null, id, url))
-    return actions.reportCloneStatus(id, {url, status:'in_progress'})
+    return actions.reportCloneStatus(id, {url, status:'cloning'})
 }
 
 function clone(id, url, folder) {
     cp.exec(`git clone --depth=1 ${url} ${folder}`)
         .on('exit', reportStatus.bind(null, id, url))
-    return actions.reportCloneStatus(id, {url, status:'in_progress'})
+    return actions.reportCloneStatus(id, {url, status:'cloning'})
 }
 
 function reportStatus(id, url, processStatus) {
     if (processStatus !== 0) {
-        actions.reportCloneStatus(id, {url, status:'invalid'})
+        actions.reportCloneStatus(id, {url, status:'clone_failed'})
     } else {
-        actions.reportCloneStatus(id, {url, status:'done'})
+        actions.reportCloneStatus(id, {url, status:'clone_done'})
     }
 }
 
