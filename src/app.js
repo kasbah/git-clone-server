@@ -28,11 +28,11 @@ app.get('/', (req, res) =>  {
 })
 
 app.use('/graphql', expressGraphql((req) =>  {
-   return {
-       schema,
-       graphiql: true,
-       rootValue: { session: req.session },
-   }
+    return {
+        schema,
+        graphiql: true,
+        rootValue: { session: req.session },
+    }
 }))
 
 module.exports = app

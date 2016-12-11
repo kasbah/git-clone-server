@@ -1,8 +1,8 @@
 //@flow
-const cp = require('child_process')
+const cp     = require('child_process')
 const crypto = require('crypto')
-const path = require('path')
-const fs = require('fs')
+const path   = require('path')
+const fs     = require('fs')
 
 const {store, actions} = require('./actions')
 
@@ -33,7 +33,6 @@ function handleSessionChanges(session, id) {
             return startClone(id, url)
         }
     })
-
 }
 
 function startClone(id, url) {
