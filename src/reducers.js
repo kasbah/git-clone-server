@@ -32,8 +32,8 @@ type RepoStatus = 'start' | 'in_progress' | 'done' | 'invalid'
 
 const sessionReducers = {
     startClone(session : Session, url: string) {
-        const status = session.get('repos').get(url)
-        if (status == null || status === 'done') {
+        const repo = session.get('repos').get(url)
+        if (repo == null || repo.get('status') === 'done' || repo.get('status') === 'invalid') {
             const repos = session.get('repos').set(url, Immutable.Map({status: 'start'}))
             return session.set('repos', repos)
         }
@@ -43,8 +43,8 @@ const sessionReducers = {
         const repos = session.get('repos')
         let repo = repos.get(url)
         const currentStatus = repo.get('status')
-        //only transition out of invalid and into start through startClone
-        if (currentStatus === 'invalid' || nextStatus === 'start') {
+        //only transition into start through startClone
+        if (nextStatus === 'start') {
             return session
         }
         repo = repo.set('status', nextStatus)
