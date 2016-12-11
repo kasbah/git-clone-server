@@ -30,6 +30,8 @@ type Repo = Immutable.Map<string, *>
 
 type RepoStatus = 'start' | 'in_progress' | 'done' | 'invalid'
 
+type ActionType = $Keys<typeof sessionReducers> | $Keys<typeof stateReducers>
+
 const sessionReducers = {
     startClone(session : Session, url: string) {
         const repo = session.get('repos').get(url)
@@ -40,13 +42,13 @@ const sessionReducers = {
         return session
     },
     reportCloneStatus(session: Session, {url, status:nextStatus}: {url: string, status: RepoStatus}) {
-        const repos = session.get('repos')
-        let repo = repos.get(url)
-        const currentStatus = repo.get('status')
         //only transition into start through startClone
         if (nextStatus === 'start') {
             return session
         }
+        const repos = session.get('repos')
+        let repo = repos.get(url)
+        const currentStatus = repo.get('status')
         repo = repo.set('status', nextStatus)
         return session.set('repos', repos.set(url, repo))
     },
@@ -60,7 +62,6 @@ const stateReducers = {
     }
 }
 
-type ActionType = $Keys<typeof sessionReducers> | $Keys<typeof stateReducers>
 
 function reduceSessions(sessions: Immutable.Map<string, Session>, action: Action) {
     if (action.session_id == null) {
