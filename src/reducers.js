@@ -39,9 +39,15 @@ const sessionReducers = {
         }
         return session
     },
-    reportCloneStatus(session: Session, {url, status}: {url: string, status: RepoStatus}) {
+    reportCloneStatus(session: Session, {url, status:nextStatus}: {url: string, status: RepoStatus}) {
         const repos = session.get('repos')
-        const repo = repos.get(url).set('status', status)
+        let repo = repos.get(url)
+        const currentStatus = repo.get('status')
+        //only transition out of invalid and into start through startClone
+        if (currentStatus === 'invalid' || nextStatus === 'start') {
+            return session
+        }
+        repo = repo.set('status', nextStatus)
         return session.set('repos', repos.set(url, repo))
     },
 

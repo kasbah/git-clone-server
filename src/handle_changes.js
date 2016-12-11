@@ -1,6 +1,8 @@
 //@flow
 const cp = require('child_process')
 const crypto = require('crypto')
+const path = require('path')
+const fs = require('fs')
 
 const {store, actions} = require('./actions')
 
@@ -28,18 +30,33 @@ function handleSessionChanges(session, id) {
     session.get('repos').forEach((repo, url) => {
         const status = repo.get('status')
         if (status === 'start') {
-            const folder = hash(url)
-            const pid = cp.exec(`git clone --depth=1 ${url} ./tmp/${id}/${folder}`)
-            pid.on('exit', processStatus => {
-                if (processStatus !== 0) {
-                    actions.reportCloneStatus(id, {url, status:'invalid'})
-                } else {
-                    actions.reportCloneStatus(id, {url, status:'done'})
-                }
-            })
-            actions.reportCloneStatus(id, {url, status:'in_progress'})
+            return startClone(id, url)
         }
     })
+
+}
+
+function startClone(id, url) {
+    const folder = urlToFolder(id, url)
+    return fs.exists(folder, exists => {
+        if (exists) {
+            return actions.reportCloneStatus(id, {url, status:'done'})
+        } else {
+            cp.exec(`git clone --depth=1 ${url} ${folder}`)
+                .on('exit', processStatus => {
+                    if (processStatus !== 0) {
+                        actions.reportCloneStatus(id, {url, status:'invalid'})
+                    } else {
+                        actions.reportCloneStatus(id, {url, status:'done'})
+                    }
+                })
+            return actions.reportCloneStatus(id, {url, status:'in_progress'})
+        }
+    })
+}
+
+function urlToFolder(id, url) {
+    return path.join('./tmp', id, hash(url))
 }
 
 function hash(str) {
