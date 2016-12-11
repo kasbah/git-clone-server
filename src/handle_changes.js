@@ -37,7 +37,7 @@ function handleSessionChanges(session, id) {
 
 function startClone(id, url) {
     const slug = hash(url)
-    const folder = urlToFolder(id, slug)
+    const folder = toFolder(id, slug)
     return fs.exists(folder, exists => {
         if (exists) {
             return pull(id, url, slug)
@@ -48,13 +48,15 @@ function startClone(id, url) {
 }
 
 function pull(id, url, slug) {
-    cp.exec(`cd ${urlToFolder(id, slug)} && git pull`)
+    const folder = toFolder(id, slug)
+    cp.exec(`cd ${folder} && git fetch && git reset --hard origin/HEAD`)
         .on('exit', reportStatus.bind(null, id, url))
     return actions.reportCloneStatus(id, {url, status:'cloning', slug})
 }
 
 function clone(id, url, slug) {
-    cp.exec(`git clone --depth=1 ${url} ${urlToFolder(id, slug)}`)
+    const folder = toFolder(id, slug)
+    cp.exec(`git clone --depth=1 ${url} ${folder}`)
         .on('exit', reportStatus.bind(null, id, url))
     return actions.reportCloneStatus(id, {url, status:'cloning', slug})
 }
@@ -67,7 +69,7 @@ function reportStatus(id, url, processStatus) {
     }
 }
 
-function urlToFolder(id, slug)  {
+function toFolder(id, slug)  {
     return path.join('./tmp', id, slug)
 }
 
