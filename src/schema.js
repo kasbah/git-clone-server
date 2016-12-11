@@ -7,12 +7,19 @@ const {actions, store} = require('./actions')
 import type {RepoStatus} from './reducers'
 
 const schema = `
+    enum RepoStatus {
+        start
+        cloning
+        clone_done
+        clone_failed
+    }
+
     type UserError {
         message : String
     }
 
     type Repo {
-        status : String
+        status : RepoStatus
         files : [String]
     }
 
