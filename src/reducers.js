@@ -41,7 +41,7 @@ const sessionReducers = {
         }
         return session
     },
-    reportCloneStatus(session: Session, {url, status:nextStatus}: {url: string, status: RepoStatus}) {
+    reportCloneStatus(session: Session, {url, status:nextStatus, slug}: {url: string, status: RepoStatus, slug: ?string}) {
         //only transition into start through startClone
         if (nextStatus === 'start') {
             return session
@@ -50,6 +50,9 @@ const sessionReducers = {
         let repo = repos.get(url)
         const currentStatus = repo.get('status')
         repo = repo.set('status', nextStatus)
+        if (slug != null) {
+            repo = repo.set('slug', slug)
+        }
         return session.set('repos', repos.set(url, repo))
     },
 

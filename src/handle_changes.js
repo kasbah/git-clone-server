@@ -36,26 +36,27 @@ function handleSessionChanges(session, id) {
 }
 
 function startClone(id, url) {
-    const folder = urlToFolder(id, url)
+    const slug = hash(url)
+    const folder = urlToFolder(id, slug)
     return fs.exists(folder, exists => {
         if (exists) {
-            return pull(id, url, folder)
+            return pull(id, url, slug)
         } else {
-            return clone(id, url, folder)
+            return clone(id, url, slug)
         }
     })
 }
 
-function pull(id, url, folder) {
-    cp.exec(`cd ${folder} && git pull`)
+function pull(id, url, slug) {
+    cp.exec(`cd ${urlToFolder(id, slug)} && git pull`)
         .on('exit', reportStatus.bind(null, id, url))
-    return actions.reportCloneStatus(id, {url, status:'cloning'})
+    return actions.reportCloneStatus(id, {url, status:'cloning', slug})
 }
 
-function clone(id, url, folder) {
-    cp.exec(`git clone --depth=1 ${url} ${folder}`)
+function clone(id, url, slug) {
+    cp.exec(`git clone --depth=1 ${url} ${urlToFolder(id, slug)}`)
         .on('exit', reportStatus.bind(null, id, url))
-    return actions.reportCloneStatus(id, {url, status:'cloning'})
+    return actions.reportCloneStatus(id, {url, status:'cloning', slug})
 }
 
 function reportStatus(id, url, processStatus) {
@@ -66,8 +67,8 @@ function reportStatus(id, url, processStatus) {
     }
 }
 
-function urlToFolder(id, url) {
-    return path.join('./tmp', id, hash(url))
+function urlToFolder(id, slug)  {
+    return path.join('./tmp', id, slug)
 }
 
 function hash(str) {

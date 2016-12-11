@@ -3,8 +3,11 @@ const express        = require('express')
 const expressGraphql = require('express-graphql')
 const cookieSession  = require('cookie-session')
 const shortid        = require('shortid')
+const fs             = require('fs')
+const path           = require('path')
 
-const schema = require('./schema')
+const schema           = require('./schema')
+const {store, actions} = require('./actions')
 
 const app = express()
 
@@ -27,8 +30,23 @@ app.get('/', (req, res) =>  {
     return res.send(req.session.id)
 })
 
-app.get('/file/:path', (req, res) =>  {
-    return res.send(req.params.path)
+app.get('/files/:slug/:file', (req, res) =>  {
+    const state = store.getState()
+    const session = state.get('sessions').get(req.session.id)
+    if (session == null) {
+        return res.sendStatus(410)
+    }
+    const {slug, file} = req.params
+    const filePath = path.join('./tmp', req.session.id, slug, file)
+    return fs.lstat(filePath, (err, info) => {
+        if (err != null) {
+            return res.sendStatus(404)
+        }
+        if (info.isDirectory()) {
+            return res.sendStatus(401)
+        }
+        return res.download(filePath)
+    })
 })
 
 app.use('/graphql', expressGraphql((req) =>  {

@@ -20,6 +20,7 @@ const schema = `
 
     type Repo {
         status : RepoStatus
+        slug : String
         files : [String]
     }
 
@@ -62,7 +63,9 @@ const resolverMap = {
                 return {message: 'Invalid session'}
             }
             const status = repo.get('status')
-            return {status}
+            const slug   = repo.get('slug')
+            const files  = repo.get('files')
+            return {status, slug, files}
         },
         sessionId({session}) {
             return session.id
