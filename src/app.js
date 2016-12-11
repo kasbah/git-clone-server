@@ -5,6 +5,7 @@ const cookieSession  = require('cookie-session')
 const shortid        = require('shortid')
 const fs             = require('fs')
 const path           = require('path')
+const serveStatic    = require('serve-static')
 
 const schema           = require('./schema')
 const {store, actions} = require('./actions')
@@ -26,9 +27,8 @@ app.all('*', (req, res, next) =>  {
     return next()
 })
 
-app.get('/', (req, res) =>  {
-    return res.send(req.session.id)
-})
+app.use('/', serveStatic('./client'))
+
 
 app.get('/files/:slug/:file', (req, res) =>  {
     const state = store.getState()
