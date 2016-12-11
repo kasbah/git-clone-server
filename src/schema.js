@@ -12,7 +12,7 @@ const schema = `
    }
 
     type Repo {
-        status   : String
+        status : String
     }
 
     union Result = Repo | UserError

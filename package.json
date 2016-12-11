@@ -23,6 +23,7 @@
     "graphql-tools": "^0.8.3",
     "immutable": "^3.8.1",
     "is-git-url": "github:kasbah/is-git-url#ssh-user-and-not-dot-git",
+    "list-filepaths": "^1.5.7",
     "redux": "^3.5.2",
     "session-file-store": "^0.2.1",
     "shortid": "^2.2.6"

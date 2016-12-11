@@ -27,6 +27,10 @@ app.get('/', (req, res) =>  {
     return res.send(req.session.id)
 })
 
+app.get('/file/:path', (req, res) =>  {
+    return res.send(req.params.path)
+})
+
 app.use('/graphql', expressGraphql((req) =>  {
     return {
         schema,
