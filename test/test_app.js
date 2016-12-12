@@ -15,7 +15,7 @@ describe('app' , () => {
             .post('/')
             .expect(200)
             .end((err, res) => {
-                expect(res.body.type).to.equal('error')
+                expect(res.body.error).to.be.ok
                 done()
             })
     })
@@ -25,8 +25,18 @@ describe('app' , () => {
             .send({ name: 'Manny', species: 'cat' })
             .expect(200)
             .end((err, res) => {
-                expect(res.body.type).to.equal('error')
+                expect(res.body.error).to.be.ok
                 done()
             })
     })
+    //it('should respond to valid request', (done) =>  {
+    //    request(app)
+    //        .post('/')
+    //        .send({ name: 'Manny', species: 'cat' })
+    //        .expect(200)
+    //        .end((err, res) => {
+    //            expect(res.body.type).to.equal('data')
+    //            done()
+    //        })
+    //})
 })

@@ -31,7 +31,7 @@ app.use('/', serveStatic('./client'))
 
 const jsonParser = bodyParser.json()
 app.post('/', jsonParser, (req, res) => {
-    return res.send({type: 'error', message: 'Not implemented'})
+    return res.send({error: 'Not implemented'})
 })
 
 app.get('/files/:slug/:file', (req, res) =>  {
