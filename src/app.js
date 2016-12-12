@@ -1,10 +1,10 @@
 //@flow weak
-const express        = require('express')
-const cookieSession  = require('cookie-session')
-const shortid        = require('shortid')
-const fs             = require('fs')
-const path           = require('path')
-const serveStatic    = require('serve-static')
+const express       = require('express')
+const cookieSession = require('cookie-session')
+const shortid       = require('shortid')
+const fs            = require('fs')
+const path          = require('path')
+const serveStatic   = require('serve-static')
 
 const {store, actions} = require('./actions')
 
@@ -27,6 +27,9 @@ app.all('*', (req, res, next) =>  {
 
 app.use('/', serveStatic('./client'))
 
+app.post('/', (req, res) => {
+    return res.send()
+})
 
 app.get('/files/:slug/:file', (req, res) =>  {
     const state = store.getState()

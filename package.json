@@ -28,6 +28,7 @@
     "flow-bin": "^0.36.0",
     "flow-remove-types": "^1.1.2",
     "flow-typed": "^2.0.0",
-    "mocha": "^3.2.0"
+    "mocha": "^3.2.0",
+    "supertest": "^2.0.1"
   }
 }
