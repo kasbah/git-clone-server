@@ -1,13 +1,11 @@
 //@flow weak
 const express        = require('express')
-const expressGraphql = require('express-graphql')
 const cookieSession  = require('cookie-session')
 const shortid        = require('shortid')
 const fs             = require('fs')
 const path           = require('path')
 const serveStatic    = require('serve-static')
 
-const schema           = require('./schema')
 const {store, actions} = require('./actions')
 
 const app = express()
@@ -48,13 +46,5 @@ app.get('/files/:slug/:file', (req, res) =>  {
         return res.download(filePath)
     })
 })
-
-app.use('/graphql', expressGraphql((req) =>  {
-    return {
-        schema,
-        graphiql: true,
-        rootValue: { session: req.session },
-    }
-}))
 
 module.exports = app
