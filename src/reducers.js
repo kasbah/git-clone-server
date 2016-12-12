@@ -18,7 +18,12 @@ type Action = {
     value: *
 }
 
-type ActionValue = any//string | {url: string, status: RepoStatus, slug: ?string, files: ?[string]}
+type ActionValue = string
+    | {status: 'start',      url: string}
+    | {status: 'cloning',    url: string, slug: string}
+    | {status: 'clone_done', url: string}
+    | {status: 'failed',     url: string}
+    | {status: 'done',       url: string, files: [string]}
 
 
 //type Session = {
