@@ -29,13 +29,14 @@ describe('app' , () => {
                 done()
             })
     })
-    it('responds to valid request with data', (done) =>  {
+    it('responds to request with test-repo data', (done) =>  {
         request(app)
             .post('/')
             .send({url:'https://github.com/kasbah/test-repo'})
             .expect(200)
             .end((err, res) => {
-                expect(res.body.data).to.be.ok
+                const path = res.body.data.files[0].slice(-9)
+                expect(path).to.equal('test-file')
                 done()
             })
     })

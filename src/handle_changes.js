@@ -16,7 +16,6 @@ store.subscribe(handleChanges)
 function handleChanges() {
     const state = store.getState()
     if (! state.equals(prev_state)) {
-        console.log(state)
         const previous_sessions = prev_state.get('sessions')
         state.get('sessions').forEach((session, id) =>  {
             if (! session.equals(previous_sessions.get(id))) {
@@ -45,7 +44,7 @@ function getFiles(id: string, url: string, slug) {
         return actions.setRepoStatus(id, {url, status: 'failed'})
     }
     const folder = toFolder(id, slug)
-    return listFilepaths(folder).then(filepaths => {
+    return listFilepaths(folder, {reject: /\.git\//}).then(filepaths => {
         const files = filepaths.map(path.relative.bind(null, `./tmp/${id}`))
         return actions.setRepoStatus(id, {url, status: 'done', files})
     }).catch(err => {

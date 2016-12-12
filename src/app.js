@@ -16,7 +16,7 @@ const app = express()
 const session = cookieSession({
     name: 'session',
     keys: ['secret squirrel'],
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    maxAge: 60 * 60 * 1000 //ms
 })
 
 app.use(session)
