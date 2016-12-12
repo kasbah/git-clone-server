@@ -6,6 +6,7 @@ const fs            = require('fs')
 const path          = require('path')
 const serveStatic   = require('serve-static')
 const bodyParser    = require('body-parser')
+const isGitUrl      = require('is-git-url')
 
 const {store, actions} = require('./actions')
 
@@ -31,7 +32,14 @@ app.use('/', serveStatic('./client'))
 
 const jsonParser = bodyParser.json()
 app.post('/', jsonParser, (req, res) => {
-    return res.send({error: 'Not implemented'})
+    if (req.session.id == null) {
+        return res.send({error: 'Invalid or expired session'})
+    }
+    if (! isGitUrl(req.body.url)) {
+        return res.send({error: 'Invalid git URL'})
+    }
+    actions.startClone(session.id, req.body.url)
+    return res.send({data: 'OK'})
 })
 
 app.get('/files/:slug/:file', (req, res) =>  {

@@ -29,14 +29,14 @@ describe('app' , () => {
                 done()
             })
     })
-    //it('should respond to valid request', (done) =>  {
-    //    request(app)
-    //        .post('/')
-    //        .send({ name: 'Manny', species: 'cat' })
-    //        .expect(200)
-    //        .end((err, res) => {
-    //            expect(res.body.type).to.equal('data')
-    //            done()
-    //        })
-    //})
+    it('should respond to valid request', (done) =>  {
+        request(app)
+            .post('/')
+            .send({url:'https://github.com/monostable/kitnic'})
+            .expect(200)
+            .end((err, res) => {
+                expect(res.body.data).to.be.ok
+                done()
+            })
+    })
 })
