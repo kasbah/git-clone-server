@@ -5,6 +5,7 @@ const shortid       = require('shortid')
 const fs            = require('fs')
 const path          = require('path')
 const serveStatic   = require('serve-static')
+const bodyParser    = require('body-parser')
 
 const {store, actions} = require('./actions')
 
@@ -18,6 +19,7 @@ const session = cookieSession({
 
 app.use(session)
 
+
 app.all('*', (req, res, next) =>  {
     if (req.session.id == null) {
         req.session.id = shortid.generate()
@@ -27,8 +29,9 @@ app.all('*', (req, res, next) =>  {
 
 app.use('/', serveStatic('./client'))
 
-app.post('/', (req, res) => {
-    return res.send()
+const jsonParser = bodyParser.json()
+app.post('/', jsonParser, (req, res) => {
+    return res.send({type: 'error', message: 'Not implemented'})
 })
 
 app.get('/files/:slug/:file', (req, res) =>  {

@@ -10,10 +10,23 @@ describe('app' , () => {
             .expect(200)
             .end((err, res) => done())
     })
-    it('should respond to POST on index', (done) =>  {
+    it('should respond to empty POST with an error type', (done) =>  {
         request(app)
             .post('/')
             .expect(200)
-            .end((err, res) => done())
+            .end((err, res) => {
+                expect(res.body.type).to.equal('error')
+                done()
+            })
+    })
+    it('should respond to invalid POST with an error type', (done) =>  {
+        request(app)
+            .post('/')
+            .send({ name: 'Manny', species: 'cat' })
+            .expect(200)
+            .end((err, res) => {
+                expect(res.body.type).to.equal('error')
+                done()
+            })
     })
 })
