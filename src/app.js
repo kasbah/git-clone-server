@@ -9,6 +9,7 @@ const bodyParser    = require('body-parser')
 const isGitUrl      = require('is-git-url')
 
 const {store, actions} = require('./actions')
+require('./handle_changes')
 
 const app = express()
 

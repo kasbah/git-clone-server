@@ -4,13 +4,13 @@ const request = require('supertest')
 const app = require('../lib/app')
 
 describe('app' , () => {
-    it('should respond to GET on index', (done) =>  {
+    it('responds to GET on index', (done) =>  {
         request(app)
             .get('/')
             .expect(200)
             .end((err, res) => done())
     })
-    it('should respond to empty POST with an error type', (done) =>  {
+    it('responds to empty POST with an error type', (done) =>  {
         request(app)
             .post('/')
             .expect(200)
@@ -19,7 +19,7 @@ describe('app' , () => {
                 done()
             })
     })
-    it('should respond to invalid POST with an error type', (done) =>  {
+    it('responds to invalid POST with an error type', (done) =>  {
         request(app)
             .post('/')
             .send({ name: 'Manny', species: 'cat' })
@@ -29,10 +29,10 @@ describe('app' , () => {
                 done()
             })
     })
-    it('should respond to valid request', (done) =>  {
+    it('responds to valid request with data', (done) =>  {
         request(app)
             .post('/')
-            .send({url:'https://github.com/monostable/kitnic'})
+            .send({url:'https://github.com/kasbah/test-repo'})
             .expect(200)
             .end((err, res) => {
                 expect(res.body.data).to.be.ok
