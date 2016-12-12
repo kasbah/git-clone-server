@@ -38,6 +38,20 @@ app.post('/', jsonParser, (req, res) => {
     if (! isGitUrl(req.body.url)) {
         return res.send({error: 'Invalid git URL'})
     }
+    const unsubscribe = store.subscribe(() => {
+        const state = store.getState()
+        const session = state.get('sessions').get(req.session.id)
+        if (session == null) {
+            return
+        }
+        const repo = session.get('repos').get(req.body.url)
+        if (repo == null) {
+            return
+        }
+        if (repo.status === 'done') {
+            return res.send({data: repo.status})
+        }
+    })
     actions.startClone(session.id, req.body.url)
     return res.send({data: 'OK'})
 })

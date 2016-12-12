@@ -39,33 +39,27 @@ function startClone(id, url) {
     const slug = hash(url)
     const folder = toFolder(id, slug)
     return fs.exists(folder, exists => {
-        if (exists) {
-            return pull(id, url, slug)
-        } else {
-            return clone(id, url, slug)
-        }
+        const process = exists ? pull(id, url, slug) : clone(id, url, slug)
+        actions.reportStatus(id, {url, status:'cloning'})
+        process.on('exit', reportStatus.bind(null, id, url))
     })
 }
 
 function pull(id, url, slug) {
     const folder = toFolder(id, slug)
-    cp.exec(`cd ${folder} && git fetch && git reset --hard origin/HEAD`)
-        .on('exit', reportStatus.bind(null, id, url))
-    return actions.reportCloneStatus(id, {url, status:'cloning', slug})
+    return cp.exec(`cd ${folder} && git fetch && git reset --hard origin/HEAD`)
 }
 
 function clone(id, url, slug) {
     const folder = toFolder(id, slug)
-    cp.exec(`git clone --depth=1 ${url} ${folder}`)
-        .on('exit', reportStatus.bind(null, id, url))
-    return actions.reportCloneStatus(id, {url, status:'cloning', slug})
+    return cp.exec(`git clone --depth=1 ${url} ${folder}`)
 }
 
 function reportStatus(id, url, processStatus) {
     if (processStatus !== 0) {
-        actions.reportCloneStatus(id, {url, status:'clone_failed'})
+        actions.reportStatus(id, {url, status:'failed'})
     } else {
-        actions.reportCloneStatus(id, {url, status:'clone_done'})
+        actions.reportStatus(id, {url, status:'clone_done'})
     }
 }
 

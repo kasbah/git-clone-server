@@ -28,7 +28,7 @@ type Session = Immutable.Map<string, Repo>
 
 type Repo = Immutable.Map<string, *>
 
-type RepoStatus = 'start' | 'cloning' | 'clone_done' | 'clone_failed'
+type RepoStatus = 'start' | 'cloning' | 'clone_done' | 'done' | 'failed'
 
 type ActionType = $Keys<typeof sessionReducers> | $Keys<typeof stateReducers>
 
@@ -41,7 +41,7 @@ const sessionReducers = {
         }
         return session
     },
-    reportCloneStatus(session: Session, {url, status:nextStatus, slug}: {url: string, status: RepoStatus, slug: ?string}) {
+    reportStatus(session: Session, {url, status:nextStatus, slug}: {url: string, status: RepoStatus, slug: ?string}) {
         //only transition into start through startClone
         if (nextStatus === 'start') {
             return session
