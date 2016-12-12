@@ -73,14 +73,14 @@ function reduceSessions(sessions: Immutable.Map<string, Session>, action: Action
     if (action.session_id == null) {
         return sessions
     }
-    let session : ?Session = sessions.get(action.session_id)
+    let session = sessions.get(action.session_id)
     if (session == null) {
         session = Immutable.Map({
             repos: Immutable.Map()
         })
     }
     session = Object.keys(sessionReducers).reduce((session, name) => {
-        if (name == action.type) {
+        if (name === action.type) {
             return sessionReducers[name](session, action.value)
         }
         return session

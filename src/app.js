@@ -48,12 +48,12 @@ app.post('/', jsonParser, (req, res) => {
         if (repo == null) {
             return
         }
-        if (repo.status === 'done') {
-            return res.send({data: repo.status})
+        if (repo.get('status') === 'done') {
+            res.send({data: {files: repo.get('files')}})
+            return unsubscribe()
         }
     })
-    actions.startClone(session.id, req.body.url)
-    return res.send({data: 'OK'})
+    actions.startClone(req.session.id, req.body.url)
 })
 
 app.get('/files/:slug/:file', (req, res) =>  {

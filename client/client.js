@@ -14,5 +14,5 @@ form.onsubmit = function submitUrl(event) {
     xhr.onload = function () {
         console.log(xhr.response)
     }
-    xhr.send(JSON.stringify({url: 'foo'}))
+    xhr.send(JSON.stringify({url: input.value}))
 }
