@@ -1,8 +1,9 @@
 //@flow
-const cp     = require('child_process')
-const crypto = require('crypto')
-const path   = require('path')
-const fs     = require('fs')
+const cp            = require('child_process')
+const crypto        = require('crypto')
+const path          = require('path')
+const fs            = require('fs')
+const listFilepaths = require('list-filepaths')
 
 const {store, actions} = require('./actions')
 
@@ -32,15 +33,33 @@ function handleSessionChanges(session, id) {
         if (status === 'start') {
             return startClone(id, url)
         }
+        else if (status === 'clone_done') {
+            const slug = repo.get('slug')
+            return getFiles(id, url, slug)
+        }
     })
 }
 
-function startClone(id, url) {
+function getFiles(id: string, url: string, slug) {
+    if (slug == null) {
+        return actions.setRepoStatus(id, {url, status: 'failed'})
+    }
+    const folder = toFolder(id, slug)
+    return listFilepaths(folder).then(filepaths => {
+        const files = filepaths.map(path.relative.bind(null, `./tmp/${id}`))
+        return actions.setRepoStatus(id, {url, status: 'done', files})
+    }).catch(err => {
+        console.error(err)
+        return actions.setRepoStatus(id, {url, status: 'failed'})
+    })
+}
+
+function startClone(id: string, url: string) {
     const slug = hash(url)
     const folder = toFolder(id, slug)
     return fs.exists(folder, exists => {
         const process = exists ? pull(id, url, slug) : clone(id, url, slug)
-        actions.reportStatus(id, {url, status:'cloning'})
+        actions.setRepoStatus(id, {url, status:'cloning', slug})
         process.on('exit', reportStatus.bind(null, id, url))
     })
 }
@@ -57,9 +76,11 @@ function clone(id, url, slug) {
 
 function reportStatus(id, url, processStatus) {
     if (processStatus !== 0) {
-        actions.reportStatus(id, {url, status:'failed'})
-    } else {
-        actions.reportStatus(id, {url, status:'clone_done'})
+        console.error('git clone/fetch failed')
+        actions.setRepoStatus(id, {url, status:'failed'})
+    }
+    else {
+        actions.setRepoStatus(id, {url, status:'clone_done'})
     }
 }
 
@@ -68,5 +89,5 @@ function toFolder(id, slug)  {
 }
 
 function hash(str) {
-    return crypto.createHash('sha1').update(str).digest('hex')
+    return crypto.createHash('sha1').update(str).digest('hex').slice(0, 7)
 }

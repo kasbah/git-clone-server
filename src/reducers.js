@@ -18,7 +18,7 @@ type Action = {
     value: *
 }
 
-type ActionValue = string | {url: string, status: RepoStatus}
+type ActionValue = any//string | {url: string, status: RepoStatus, slug: ?string, files: ?[string]}
 
 
 //type Session = {
@@ -41,7 +41,7 @@ const sessionReducers = {
         }
         return session
     },
-    reportStatus(session: Session, {url, status:nextStatus, slug}: {url: string, status: RepoStatus, slug: ?string}) {
+    setRepoStatus(session: Session, {url, status:nextStatus, slug, files}: {url: string, status: RepoStatus, slug: ?string, files: ?[string]}) {
         //only transition into start through startClone
         if (nextStatus === 'start') {
             return session
@@ -52,6 +52,9 @@ const sessionReducers = {
         repo = repo.set('status', nextStatus)
         if (slug != null) {
             repo = repo.set('slug', slug)
+        }
+        if (files != null) {
+            repo = repo.set('files', files)
         }
         return session.set('repos', repos.set(url, repo))
     },
