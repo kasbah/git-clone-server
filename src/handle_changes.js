@@ -1,15 +1,13 @@
 //@flow
-const cp            = require('child_process')
-const crypto        = require('crypto')
-const path          = require('path')
-const fs            = require('fs')
-const glob          = require('glob')
-const rimraf        = require('rimraf')
+const cp     = require('child_process')
+const crypto = require('crypto')
+const fs     = require('fs')
+const glob   = require('glob')
+const rimraf = require('rimraf')
+const {join} = require('path')
 
 const config           = require('./config')
 const {store, actions} = require('./actions')
-
-import type {RepoStatus} from './reducers'
 
 let prev_state = store.getState()
 store.subscribe(handleChanges)
@@ -31,14 +29,14 @@ function handleChanges() {
 
 function removeUnusedFiles(sessions) {
     const keys = sessions.keySeq()
-    glob(path.join(config.session_data, '*'), (err, files) => {
+    glob(join(config.session_data, '*'), (err, files) => {
          if (err)  {
              return console.error('glob', err)
          }
          const folder_ids = files.map(path.relative.bind(null, config.session_data))
          folder_ids.forEach(id => {
              if (! keys.contains(id)) {
-                 const p = path.join(config.session_data, id)
+                 const p = join(config.session_data, id)
                  rimraf(p, {disableGlob: true}, (err) => {
                      if (err) {
                          console.error('rimraf', err)
@@ -68,13 +66,13 @@ function getFiles(id: string, url: string, slug) {
         return actions.setRepoStatus(id, {url, status: 'failed'})
     }
     const folder = toFolder(id, slug)
-    const options = {dot: true, nodir: true, ignore: path.join(folder, '.git/**/*')}
-    return glob(path.join(folder, '**/*'), options,(err, filepaths) => {
+    const options = {dot: true, nodir: true, ignore: join(folder, '.git/**/*')}
+    return glob(join(folder, '**/*'), options,(err, filepaths) => {
         if (err) {
             console.error('glob', err)
             return actions.setRepoStatus(id, {url, status: 'failed'})
         }
-        const files = filepaths.map(path.relative.bind(null, path.join(config.session_data, id)))
+        const files = filepaths.map(path.relative.bind(null, join(config.session_data, id)))
         return actions.setRepoStatus(id, {url, status: 'done', files})
     })
 }
@@ -110,7 +108,7 @@ function reportStatus(id, url, processStatus) {
 }
 
 function toFolder(id, slug)  {
-    return path.join(config.session_data, id, slug)
+    return join(config.session_data, id, slug)
 }
 
 function hash(str) {
