@@ -80,7 +80,7 @@ app.post('/', jsonParser, (req, res) => {
             return
         }
         if (repo.get('status') === 'done') {
-            res.send({data: {files: repo.get('files')}})
+            res.send({data: {files: repo.get('files').map(p => '/files/' + p)}})
             return unsubscribe()
         }
         if (repo.get('status') === 'failed') {

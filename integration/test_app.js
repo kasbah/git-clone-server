@@ -60,7 +60,7 @@ describe('app' , () => {
     })
     it('serves the test-repo files', done => {
         const requests = files.map(path => {
-            return agent.get('/files/' + path).expect(200)
+            return agent.get(path).expect(200)
         })
         Promise.all(requests).then(() => done()).catch(done)
     })
