@@ -1,3 +1,3 @@
-const session_data = './session-data'
+const SESSION_DIR = './session-data'
 
-module.exports = {session_data}
+module.exports = {SESSION_DIR}
