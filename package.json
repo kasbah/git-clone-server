@@ -27,6 +27,8 @@
     "is-git-url": "github:kasbah/is-git-url#ssh-user-and-not-dot-git",
     "redux": "^3.5.2",
     "rimraf": "^2.5.4",
+    "serve-index": "^1.8.0",
+    "serve-static": "^1.11.1",
     "shortid": "^2.2.6"
   },
   "devDependencies": {

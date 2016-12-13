@@ -7,6 +7,7 @@ const path          = require('path')
 const serveStatic   = require('serve-static')
 const bodyParser    = require('body-parser')
 const isGitUrl      = require('is-git-url')
+const serveIndex    = require('serve-index')
 
 
 const {SESSION_DIR}    = require('./config')
@@ -43,13 +44,13 @@ function setRemovalTimeout(id) {
 // Only changes every minute so that it's not sent with every request.
 // XXX this might not work if the application gets more complex
 // https://github.com/expressjs/cookie-session/pull/49#issuecomment-225406044
-app.use(function (req, res, next) {
+app.use((req, res, next) =>  {
     req.session.nowInMinutes = Date.now() / 60e3
     setRemovalTimeout(req.session.id)
     return next()
 })
 
-app.all('*', (req, res, next) =>  {
+app.use((req, res, next) =>  {
     if (req.session.id == null) {
         req.session.id = shortid.generate()
         setRemovalTimeout(req.session.id)
@@ -85,22 +86,16 @@ app.post('/', jsonParser, (req, res) => {
     actions.startClone(req.session.id, req.body.url)
 })
 
-app.get('/files/:slug/:file', (req, res) =>  {
+app.use('/files', (req, res, next) => {
     const state = store.getState()
     const session = state.get('sessions').get(req.session.id)
     if (session == null) {
         return res.sendStatus(410)
     }
-    const {slug, file} = req.params
-    const file_path = path.join(SESSION_DIR, req.session.id, slug, file)
-    return fs.lstat(file_path, (err, info) => {
-        if (err != null) {
-            return res.sendStatus(404)
-        }
-        if (info.isDirectory()) {
-            return res.sendStatus(401)
-        }
-        return res.download(file_path)
+    const dir = path.join(SESSION_DIR, req.session.id)
+    const index = serveIndex(dir, {icons: true})
+    return index(req, res, () => {
+        return serveStatic(dir)(req, res, next)
     })
 })
 
