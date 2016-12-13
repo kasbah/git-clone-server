@@ -57,13 +57,13 @@ function startClone(id: string, url: string) {
     const slug = hash(url)
     const folder = toFolder(id, slug)
     return fs.exists(folder, exists => {
-        const process = exists ? pull(id, url, slug) : clone(id, url, slug)
+        const process = exists ? fetch(id, url, slug) : clone(id, url, slug)
         actions.setRepoStatus(id, {url, status:'cloning', slug})
         process.on('exit', reportStatus.bind(null, id, url))
     })
 }
 
-function pull(id, url, slug) {
+function fetch(id, url, slug) {
     const folder = toFolder(id, slug)
     return cp.exec(`cd ${folder} && git fetch && git reset --hard origin/HEAD`)
 }
