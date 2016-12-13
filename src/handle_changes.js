@@ -38,15 +38,27 @@ function removeUnusedFiles(sessions) {
          const folder_ids = files.map(relativeToSession)
          folder_ids.forEach(id => {
              if (! keys.contains(id)) {
-                 const p = join(SESSION_DIR, id)
-                 rimraf(p, {disableGlob: true}, (err) => {
-                     if (err) {
-                         console.error('rimraf', err)
+                 removeDir(join(SESSION_DIR, id))
+             }
+             else {
+                 const session = sessions.get(id)
+                 const repos = session.get('repos')
+                 repos.forEach((repo, slug) => {
+                     if (repo.get('status') === 'failed') {
+                         removeDir(join(SESSION_DIR, id, slug))
                      }
                  })
              }
          })
     })
+}
+
+function removeDir(p) {
+     rimraf(p, {disableGlob: true}, (err) => {
+         if (err) {
+             console.error('rimraf', err)
+         }
+     })
 }
 
 function handleSessionChanges(session, id) {
