@@ -57,4 +57,38 @@ describe('mainReducer', () => {
         expect(state3.get('sessions').get(id).get('timeout')).to.equal('mick')
         return done()
     })
+    it("starts a clone", done => {
+        const id  = 'id'
+        const url = 'url'
+        const state1 = mainReducer(initial_state, {type: 'startClone', id, value:url})
+        expect(state1.get('sessions').get(id).get('repos').get(url).get('status')).to.equal('start')
+        return done()
+    })
+    it("transitions from 'start' to 'cloning'", done => {
+        const id  = 'id'
+        const url = 'url'
+        const state1 = mainReducer(initial_state, {type: 'startClone', id, value:url})
+        const state2 = mainReducer(state1, {type: 'setRepoStatus', id, value:{url, status:'cloning', slug:'slug'}})
+        expect(state2.get('sessions').get(id).get('repos').get(url).get('status')).to.equal('cloning')
+        return done()
+    })
+    it("doesn't transition from 'cloning' to 'start'", done => {
+        const id  = 'id'
+        const url = 'url'
+        const state1 = mainReducer(initial_state, {type: 'startClone', id, value:url})
+        const state2 = mainReducer(state1, {type: 'setRepoStatus', id, value:{url, status:'cloning', slug:'slug'}})
+        const state3 = mainReducer(state2, {type: 'startClone', id, value:url})
+        expect(state3.get('sessions').get(id).get('repos').get(url).get('status')).to.equal('cloning')
+        return done()
+    })
+    it("doesn't transition from 'clone_done' to 'start'", done => {
+        const id  = 'id'
+        const url = 'url'
+        const state1 = mainReducer(initial_state, {type: 'startClone', id, value:url})
+        const state2 = mainReducer(state1, {type: 'setRepoStatus', id, value:{url, status:'cloning', slug:'slug'}})
+        const state3 = mainReducer(state2, {type: 'setRepoStatus', id, value:{url, status:'clone_done'}})
+        const state4 = mainReducer(state3, {type: 'startClone', id, value:url})
+        expect(state4.get('sessions').get(id).get('repos').get(url).get('status')).to.equal('clone_done')
+        return done()
+    })
 })
