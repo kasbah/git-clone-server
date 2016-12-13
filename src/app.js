@@ -10,7 +10,7 @@ const isGitUrl      = require('is-git-url')
 const serveIndex    = require('serve-index')
 
 
-const {SESSION_DIR}    = require('./config')
+const {SESSION_DIR, MAX_CLONE_DURATION} = require('./config')
 const {store, actions} = require('./actions')
 require('./handle_changes')
 
@@ -68,6 +68,11 @@ app.post('/', jsonParser, (req, res) => {
     if (! isGitUrl(req.body.url)) {
         return res.send({error: 'Invalid git URL'})
     }
+    const timeout = setTimeout(() => {
+        console.error(`request timed out on ${req.body.url}`)
+        actions.setRepoStatus(req.session.id, {url: req.body.url, status: 'failed'})
+        res.sendStatus(408)
+    }, MAX_CLONE_DURATION)
     const unsubscribe = store.subscribe(() => {
         const state = store.getState()
         const session = state.get('sessions').get(req.session.id)
@@ -80,6 +85,7 @@ app.post('/', jsonParser, (req, res) => {
         }
         if (repo.get('status') === 'done') {
             res.send({data: {files: repo.get('files')}})
+            clearTimeout(timeout)
             return unsubscribe()
         }
     })
