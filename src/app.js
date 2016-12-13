@@ -8,6 +8,8 @@ const serveStatic   = require('serve-static')
 const bodyParser    = require('body-parser')
 const isGitUrl      = require('is-git-url')
 
+
+const config = require('./config')
 const {store, actions} = require('./actions')
 require('./handle_changes')
 
@@ -90,7 +92,7 @@ app.get('/files/:slug/:file', (req, res) =>  {
         return res.sendStatus(410)
     }
     const {slug, file} = req.params
-    const filePath = path.join('./tmp', req.session.id, slug, file)
+    const filePath = path.join(config.session_data, req.session.id, slug, file)
     return fs.lstat(filePath, (err, info) => {
         if (err != null) {
             return res.sendStatus(404)

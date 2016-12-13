@@ -2,4 +2,4 @@ lib/
 node_modules/
 yarn-error.log
 flow-typed/
-tmp/
+session-data/

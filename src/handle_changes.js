@@ -5,10 +5,10 @@ const path          = require('path')
 const fs            = require('fs')
 const listFilepaths = require('list-filepaths')
 
+const config           = require('./config')
 const {store, actions} = require('./actions')
 
 import type {RepoStatus} from './reducers'
-
 
 let prev_state = store.getState()
 store.subscribe(handleChanges)
@@ -45,7 +45,7 @@ function getFiles(id: string, url: string, slug) {
     }
     const folder = toFolder(id, slug)
     return listFilepaths(folder, {reject: /\.git\//}).then(filepaths => {
-        const files = filepaths.map(path.relative.bind(null, `./tmp/${id}`))
+        const files = filepaths.map(path.relative.bind(null, path.join(config.session_data, id)))
         return actions.setRepoStatus(id, {url, status: 'done', files})
     }).catch(err => {
         console.error(err)
@@ -84,7 +84,7 @@ function reportStatus(id, url, processStatus) {
 }
 
 function toFolder(id, slug)  {
-    return path.join('./tmp', id, slug)
+    return path.join(config.session_data, id, slug)
 }
 
 function hash(str) {
