@@ -16,6 +16,7 @@ store.subscribe(handleChanges)
 function handleChanges() {
     const state = store.getState()
     if (! state.equals(prev_state)) {
+        const sessions = state.get('sessions')
         const previous_sessions = prev_state.get('sessions')
         state.get('sessions').forEach((session, id) =>  {
             if (! session.equals(previous_sessions.get(id))) {
@@ -41,6 +42,7 @@ function handleSessionChanges(session, id) {
 
 function getFiles(id: string, url: string, slug) {
     if (slug == null) {
+        console.error('no slug when trying to get files')
         return actions.setRepoStatus(id, {url, status: 'failed'})
     }
     const folder = toFolder(id, slug)
@@ -75,7 +77,7 @@ function clone(id, url, slug) {
 
 function reportStatus(id, url, processStatus) {
     if (processStatus !== 0) {
-        console.error('git clone/fetch failed')
+        console.warn('git clone/fetch failed')
         actions.setRepoStatus(id, {url, status:'failed'})
     }
     else {
