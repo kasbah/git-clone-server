@@ -14,7 +14,7 @@ const initial_state : State = Immutable.Map({
 
 type Action = {
     type: ActionType,
-    session_id: string,
+    id: string,
     value: any
 }
 
@@ -72,18 +72,18 @@ const sessionReducers = {
 }
 
 const stateReducers = {
-    removeSession(state: State, session_id: string): State {
-        const sessions = state.get('sessions').delete(session_id)
+    removeSession(state: State, id: string): State {
+        const sessions = state.get('sessions').delete(id)
         return state.set('sessions', sessions)
     }
 }
 
 
 function reduceSessions(sessions: Immutable.Map<string, Session>, action: Action) {
-    if (action.session_id == null) {
+    if (action.id == null) {
         return sessions
     }
-    let session = sessions.get(action.session_id)
+    let session = sessions.get(action.id)
     if (session == null) {
         session = Immutable.Map({
             repos: Immutable.Map()
@@ -95,7 +95,7 @@ function reduceSessions(sessions: Immutable.Map<string, Session>, action: Action
         }
         return session
     }, session)
-    return sessions.set(action.session_id, session)
+    return sessions.set(action.id, session)
 }
 
 function reduceState(state: State, action: Action) {

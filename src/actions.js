@@ -9,8 +9,8 @@ import type {ActionValue} from './reducers'
 function makeActions(store) {
     const actions = {}
     Object.keys(sessionReducers).forEach(name => {
-        actions[name] = function actionDispatch(session_id, value : ActionValue) {
-            return store.dispatch({type: name, session_id, value})
+        actions[name] = function actionDispatch(id, value : ActionValue) {
+            return store.dispatch({type: name, id, value})
         }
     })
     Object.keys(stateReducers).forEach(name => {
