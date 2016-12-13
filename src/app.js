@@ -71,7 +71,6 @@ app.post('/', jsonParser, (req, res) => {
     const timeout = setTimeout(() => {
         console.error(`request timed out on ${req.body.url}`)
         actions.setRepoStatus(req.session.id, {url: req.body.url, status: 'failed'})
-        res.sendStatus(408)
     }, MAX_CLONE_DURATION)
     const unsubscribe = store.subscribe(() => {
         const state = store.getState()
@@ -85,6 +84,11 @@ app.post('/', jsonParser, (req, res) => {
         }
         if (repo.get('status') === 'done') {
             res.send({data: {files: repo.get('files')}})
+            clearTimeout(timeout)
+            return unsubscribe()
+        }
+        if (repo.get('status') === 'failed') {
+            res.send({error: 'clone failed'})
             clearTimeout(timeout)
             return unsubscribe()
         }

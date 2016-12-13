@@ -29,6 +29,16 @@ describe('app' , () => {
                 done()
             })
     })
+    it('responds to non existent git repo with error type', done => {
+        request(app)
+            .post('/')
+            .send({ url: 'https://github.com/kasbah/no-way-this-repo-exists-look-at-the-name-its-way-too-long'})
+            .expect(200)
+            .end((err, res) => {
+                expect(res.body.error).to.be.ok
+                done()
+            })
+    })
     const agent = request.agent(app)
     let files
     it('responds to request with test-repo data', done => {

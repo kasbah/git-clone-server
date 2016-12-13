@@ -10,7 +10,7 @@
     "pretest": "yarn run flow-remove",
     "test": "flow && mocha test",
     "pretest:integration": "yarn run flow-remove",
-    "test:integration": "mocha integration"
+    "test:integration": "mocha integration --timeout=32000"
   },
   "pre-commit": [
     "test"
