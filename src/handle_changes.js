@@ -69,7 +69,7 @@ function getFiles(id: string, url: string, slug) {
     }
     const folder = toFolder(id, slug)
     const options = {dot: true, nodir: true, ignore: join(folder, '.git/**/*')}
-    return glob(join(folder, '**/*'), options,(err, filepaths) => {
+    return glob(join(folder, '**/*'), options, (err, filepaths) => {
         if (err) {
             console.error('glob', err)
             return actions.setRepoStatus(id, {url, status: 'failed'})

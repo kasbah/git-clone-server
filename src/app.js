@@ -92,15 +92,15 @@ app.get('/files/:slug/:file', (req, res) =>  {
         return res.sendStatus(410)
     }
     const {slug, file} = req.params
-    const filePath = path.join(SESSION_DIR, req.session.id, slug, file)
-    return fs.lstat(filePath, (err, info) => {
+    const file_path = path.join(SESSION_DIR, req.session.id, slug, file)
+    return fs.lstat(file_path, (err, info) => {
         if (err != null) {
             return res.sendStatus(404)
         }
         if (info.isDirectory()) {
             return res.sendStatus(401)
         }
-        return res.download(filePath)
+        return res.download(file_path)
     })
 })
 

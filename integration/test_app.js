@@ -40,8 +40,8 @@ describe('app' , () => {
                 done()
             })
     })
+    const agent = request.agent(app)
     it('serves the files', done => {
-        const agent = request.agent(app)
         agent.post('/')
             .send({url:'https://github.com/kasbah/test-repo'})
             .expect(200)
@@ -51,5 +51,11 @@ describe('app' , () => {
                     .expect(200)
                     .end(done)
             })
+    })
+    it("doesn't allow access outside of session data", done => {
+        const path = '../../../package.json'
+        agent.get('/files/' + path)
+            .expect(404)
+            .end(done)
     })
 })
