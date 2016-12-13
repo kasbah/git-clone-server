@@ -3,7 +3,6 @@ const cp            = require('child_process')
 const crypto        = require('crypto')
 const path          = require('path')
 const fs            = require('fs')
-const listFilepaths = require('list-filepaths')
 const glob          = require('glob')
 const rimraf        = require('rimraf')
 
@@ -33,7 +32,7 @@ function handleChanges() {
 function removeUnusedFiles(sessions) {
     const keys = sessions.keySeq()
     glob(path.join(config.session_data, '*'), (err, files) => {
-         if (err != null)  {
+         if (err)  {
              return console.error('glob', err)
          }
          const folder_ids = files.map(path.relative.bind(null, config.session_data))
@@ -41,7 +40,7 @@ function removeUnusedFiles(sessions) {
              if (! keys.contains(id)) {
                  const p = path.join(config.session_data, id)
                  rimraf(p, {disableGlob: true}, (err) => {
-                     if (err != null) {
+                     if (err) {
                          console.error('rimraf', err)
                      }
                  })
@@ -65,16 +64,18 @@ function handleSessionChanges(session, id) {
 
 function getFiles(id: string, url: string, slug) {
     if (slug == null) {
-        console.error('no slug when trying to get files')
+        console.error('no slug when trying to list files')
         return actions.setRepoStatus(id, {url, status: 'failed'})
     }
     const folder = toFolder(id, slug)
-    return listFilepaths(folder, {reject: /\.git\//}).then(filepaths => {
+    const options = {dot: true, nodir: true, ignore: path.join(folder, '.git/**/*')}
+    return glob(path.join(folder, '**/*'), options,(err, filepaths) => {
+        if (err) {
+            console.error('glob', err)
+            return actions.setRepoStatus(id, {url, status: 'failed'})
+        }
         const files = filepaths.map(path.relative.bind(null, path.join(config.session_data, id)))
         return actions.setRepoStatus(id, {url, status: 'done', files})
-    }).catch(err => {
-        console.error(err)
-        return actions.setRepoStatus(id, {url, status: 'failed'})
     })
 }
 

@@ -1,7 +1,7 @@
 {
   "name": "git-clone-and-serve",
   "version": "1.0.0",
-  "description": "Git cloning and serving files as a service",
+  "description": "Git cloning and serving the files as a service",
   "main": "lib/server.js",
   "scripts": {
     "prestart": "yarn run flow-remove",
@@ -25,7 +25,6 @@
     "express-session": "^1.14.0",
     "immutable": "^3.8.1",
     "is-git-url": "github:kasbah/is-git-url#ssh-user-and-not-dot-git",
-    "list-filepaths": "^1.5.7",
     "redux": "^3.5.2",
     "rimraf": "^2.5.4",
     "shortid": "^2.2.6"
