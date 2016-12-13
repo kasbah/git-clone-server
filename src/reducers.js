@@ -18,13 +18,14 @@ type Action = {
     value: any
 }
 
-type ActionValue = string
-    | {status: 'start',      url: string}
-    | {status: 'cloning',    url: string, slug: string}
-    | {status: 'clone_done', url: string}
-    | {status: 'failed',     url: string}
-    | {status: 'done',       url: string, files: [string]}
-    | {timeout: mixed}
+type ActionValue = any
+//    string
+//    | {status: 'start',      url: string}
+//    | {status: 'cloning',    url: string, slug: string}
+//    | {status: 'clone_done', url: string}
+//    | {status: 'failed',     url: string}
+//    | {status: 'done',       url: string, files: [string]}
+//    | {timeout: mixed}
 
 
 //type Session = {

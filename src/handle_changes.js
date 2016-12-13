@@ -6,7 +6,7 @@ const glob   = require('glob')
 const rimraf = require('rimraf')
 const {join, relative} = require('path')
 
-const {SESSION_DIR}    = require('./config')
+const {SESSION_DIR, MAX_CLONE_DURATION} = require('./config')
 const {store, actions} = require('./actions')
 
 
@@ -95,9 +95,17 @@ function startClone(id: string, url: string) {
     const slug = hash(url)
     const folder = toFolder(id, slug)
     return fs.exists(folder, exists => {
-        const process = exists ? fetch(id, url, slug) : clone(id, url, slug)
+        const child = exists ? fetch(id, url, slug) : clone(id, url, slug)
         actions.setRepoStatus(id, {url, status:'cloning', slug})
-        process.on('exit', reportStatus.bind(null, id, url))
+        const timeout = setTimeout(() => {
+            console.warn(`clone timed out on ${url}`)
+            child.kill()
+        }, MAX_CLONE_DURATION)
+        child.on('exit', processStatus => {
+            const status = processStatus === 0 ? 'clone_done' : 'failed'
+            clearTimeout(timeout)
+            actions.setRepoStatus(id, {url, status})
+        })
     })
 }
 
