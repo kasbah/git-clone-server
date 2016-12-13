@@ -18,14 +18,16 @@ type Action = {
     value: any
 }
 
-type ActionValue = any
-//    string
+type ActionType = $Keys<typeof sessionReducers> | $Keys<typeof stateReducers>
+
+//type ActionValue = string
 //    | {status: 'start',      url: string}
 //    | {status: 'cloning',    url: string, slug: string}
 //    | {status: 'clone_done', url: string}
 //    | {status: 'failed',     url: string}
 //    | {status: 'done',       url: string, files: [string]}
 //    | {timeout: mixed}
+type ActionValue = any
 
 
 //type Session = {
@@ -37,25 +39,40 @@ type Repo = Immutable.Map<string, any>
 
 type RepoStatus = 'start' | 'cloning' | 'clone_done' | 'done' | 'failed'
 
-type ActionType = $Keys<typeof sessionReducers> | $Keys<typeof stateReducers>
+function allowedNext(status: RepoStatus): Immutable.List<RepoStatus> {
+    switch(status) {
+        case 'start':
+            return Immutable.List.of('cloning', 'failed')
+        case 'cloning':
+            return Immutable.List.of('clone_done', 'failed')
+        case 'clone_done':
+            return Immutable.List.of('done', 'failed')
+        case 'done':
+            return Immutable.List.of('start')
+        case 'failed':
+            return Immutable.List.of('start')
+        default:
+            return Immutable.List()
+    }
+}
+
 
 const sessionReducers = {
-    startClone(session : Session, url: string) {
+    startClone(session: Session, url: string) {
         const repo = session.get('repos').get(url)
-        if (repo == null || repo.get('status') === 'done' || repo.get('status') === 'failed') {
+        if (repo == null || allowedNext(repo.get('status')).contains('start')) {
             const repos = session.get('repos').set(url, Immutable.Map({status: 'start'}))
             return session.set('repos', repos)
         }
         return session
     },
     setRepoStatus(session: Session, {url, status:nextStatus, slug, files}: {url: string, status: RepoStatus, slug: ?string, files: ?[string]}) {
-        //only transition into start through startClone
-        if (nextStatus === 'start') {
-            return session
-        }
         const repos = session.get('repos')
         let repo = repos.get(url)
         const currentStatus = repo.get('status')
+        if (repo == null || !allowedNext(currentStatus).contains(nextStatus)) {
+            return session
+        }
         repo = repo.set('status', nextStatus)
         if (slug != null) {
             repo = repo.set('slug', slug)

@@ -91,4 +91,24 @@ describe('mainReducer', () => {
         expect(state4.get('sessions').get(id).get('repos').get(url).get('status')).to.equal('clone_done')
         return done()
     })
+    it("doesn't transition from 'failed' to 'clone_done'", done => {
+        const id  = 'id'
+        const url = 'url'
+        let state = mainReducer(initial_state, {type: 'startClone', id, value:url})
+        state = mainReducer(state, {type: 'setRepoStatus', id, value:{url, status:'cloning', slug:'slug'}})
+        state = mainReducer(state, {type: 'setRepoStatus', id, value:{url, status:'failed'}})
+        state = mainReducer(state, {type: 'setRepoStatus', id, value:{url, status:'clone_done'}})
+        expect(state.get('sessions').get(id).get('repos').get(url).get('status')).to.equal('failed')
+        return done()
+    })
+    it("doesn't transition from 'failed' to 'cloning'", done => {
+        const id  = 'id'
+        const url = 'url'
+        let state = mainReducer(initial_state, {type: 'startClone', id, value:url})
+        state = mainReducer(state, {type: 'setRepoStatus', id, value:{url, status:'cloning', slug:'slug'}})
+        state = mainReducer(state, {type: 'setRepoStatus', id, value:{url, status:'failed'}})
+        state = mainReducer(state, {type: 'setRepoStatus', id, value:{url, status:'cloning'}})
+        expect(state.get('sessions').get(id).get('repos').get(url).get('status')).to.equal('failed')
+        return done()
+    })
 })
