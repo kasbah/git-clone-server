@@ -18,6 +18,7 @@ const app = express()
 
 const sessionAge = 60 * 60 * 1000 //ms
 
+app.use('/', serveStatic('./client'))
 
 const session = cookieSession({
     name: 'session',
@@ -43,13 +44,14 @@ function setRemovalTimeout(id) {
 // Update a value in the cookie so that the set-cookie will be sent.
 // Only changes every minute so that it's not sent with every request.
 // XXX this might not work if the application gets more complex
-// https://github.com/expressjs/cookie-session/pull/49#issuecomment-225406044
+// see https://github.com/expressjs/cookie-session/pull/49#issuecomment-225406044
 app.use((req, res, next) =>  {
     req.session.nowInMinutes = Date.now() / 60e3
     setRemovalTimeout(req.session.id)
     return next()
 })
 
+//generate an id and attach it to new sessions
 app.use((req, res, next) =>  {
     if (req.session.id == null) {
         req.session.id = shortid.generate()
@@ -58,7 +60,6 @@ app.use((req, res, next) =>  {
     return next()
 })
 
-app.use('/', serveStatic('./client'))
 
 const jsonParser = bodyParser.json()
 app.post('/', jsonParser, (req, res) => {

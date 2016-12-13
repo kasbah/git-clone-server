@@ -41,7 +41,7 @@ type ActionType = $Keys<typeof sessionReducers> | $Keys<typeof stateReducers>
 const sessionReducers = {
     startClone(session : Session, url: string) {
         const repo = session.get('repos').get(url)
-        if (repo == null || repo.get('status') === 'clone_done' || repo.get('status') === 'clone_failed') {
+        if (repo == null || repo.get('status') === 'done' || repo.get('status') === 'failed') {
             const repos = session.get('repos').set(url, Immutable.Map({status: 'start'}))
             return session.set('repos', repos)
         }
@@ -71,7 +71,7 @@ const sessionReducers = {
 }
 
 const stateReducers = {
-    removeSession(state : State, session_id : string) {
+    removeSession(state: State, session_id: string): State {
         const sessions = state.get('sessions').delete(session_id)
         return state.set('sessions', sessions)
     }
