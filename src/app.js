@@ -13,18 +13,44 @@ require('./handle_changes')
 
 const app = express()
 
+const sessionAge = 60 * 60 * 1000 //ms
+
+
 const session = cookieSession({
     name: 'session',
     keys: ['secret squirrel'],
-    maxAge: 60 * 60 * 1000 //ms
+    maxAge: sessionAge
 })
 
 app.use(session)
 
+function setRemovalTimeout(id) {
+    const state = store.getState()
+    const session = state.get('sessions').get(id)
+    if (session != null) {
+        const timeout = session.get('timeout')
+        clearTimeout(timeout)
+    }
+    const timeout = setTimeout(() => {
+        actions.removeSession(id)
+    }, sessionAge)
+    actions.setTimeout(id, {timeout})
+}
+
+// Update a value in the cookie so that the set-cookie will be sent.
+// Only changes every minute so that it's not sent with every request.
+// XXX this might not work if the application gets more complex
+// https://github.com/expressjs/cookie-session/pull/49#issuecomment-225406044
+app.use(function (req, res, next) {
+    req.session.nowInMinutes = Date.now() / 60e3
+    setRemovalTimeout(req.session.id)
+    return next()
+})
 
 app.all('*', (req, res, next) =>  {
     if (req.session.id == null) {
         req.session.id = shortid.generate()
+        setRemovalTimeout(req.session.id)
     }
     return next()
 })

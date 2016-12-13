@@ -6,7 +6,7 @@ const crypto = require('crypto')
 //type State = {
 //    sessions : Immutable.Map<string, Session>
 //}
-type State = Immutable.Map<string, *>
+type State = Immutable.Map<string, any>
 
 const initial_state : State = Immutable.Map({
     sessions: Immutable.Map()
@@ -15,7 +15,7 @@ const initial_state : State = Immutable.Map({
 type Action = {
     type: ActionType,
     session_id: string,
-    value: *
+    value: any
 }
 
 type ActionValue = string
@@ -24,14 +24,15 @@ type ActionValue = string
     | {status: 'clone_done', url: string}
     | {status: 'failed',     url: string}
     | {status: 'done',       url: string, files: [string]}
+    | {timeout: mixed}
 
 
 //type Session = {
 //    repos: Immutable.Map<string, RepoStatus>
 //}
-type Session = Immutable.Map<string, Repo>
+type Session = Immutable.Map<string, any>
 
-type Repo = Immutable.Map<string, *>
+type Repo = Immutable.Map<string, any>
 
 type RepoStatus = 'start' | 'cloning' | 'clone_done' | 'done' | 'failed'
 
@@ -63,6 +64,9 @@ const sessionReducers = {
         }
         return session.set('repos', repos.set(url, repo))
     },
+    setTimeout(session: Session, {timeout}: {timeout: mixed}): Session {
+        return session.set('timeout', timeout)
+    }
 
 }
 

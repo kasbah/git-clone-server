@@ -39,4 +39,22 @@ describe('mainReducer', () => {
         expect(state2.get('sessions').size).to.equal(0)
         return done()
     })
+    it('adds a timeout', done => {
+        const session_id = 'id'
+        const state1 = mainReducer(initial_state, {type: 'startClone', session_id, value: 'value'})
+        expect(state1.get('sessions').size).to.equal(1)
+        const state2 = mainReducer(state1, {type: 'setTimeout', session_id, value: {timeout: 'mock'}})
+        expect(state2.get('sessions').get(session_id).get('timeout')).to.equal('mock')
+        return done()
+    })
+    it('overwrites a timeout', done => {
+        const session_id = 'id'
+        const state1 = mainReducer(initial_state, {type: 'startClone', session_id, value: 'value'})
+        expect(state1.get('sessions').size).to.equal(1)
+        const state2 = mainReducer(state1, {type: 'setTimeout', session_id, value: {timeout: 'mock'}})
+        expect(state2.get('sessions').get(session_id).get('timeout')).to.equal('mock')
+        const state3 = mainReducer(state1, {type: 'setTimeout', session_id, value: {timeout: 'mick'}})
+        expect(state3.get('sessions').get(session_id).get('timeout')).to.equal('mick')
+        return done()
+    })
 })

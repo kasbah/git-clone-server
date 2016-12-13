@@ -13,8 +13,7 @@
     "test:integration": "mocha integration"
   },
   "pre-commit": [
-    "test",
-    "test:integration"
+    "test"
   ],
   "keywords": [],
   "author": "Kaspar Emanuel",
