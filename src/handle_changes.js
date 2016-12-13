@@ -4,6 +4,8 @@ const crypto        = require('crypto')
 const path          = require('path')
 const fs            = require('fs')
 const listFilepaths = require('list-filepaths')
+const glob          = require('glob')
+const rimraf        = require('rimraf')
 
 const config           = require('./config')
 const {store, actions} = require('./actions')
@@ -18,13 +20,34 @@ function handleChanges() {
     if (! state.equals(prev_state)) {
         const sessions = state.get('sessions')
         const previous_sessions = prev_state.get('sessions')
-        state.get('sessions').forEach((session, id) =>  {
+        sessions.forEach((session, id) =>  {
             if (! session.equals(previous_sessions.get(id))) {
                 handleSessionChanges(session, id)
             }
         })
+        removeUnusedFiles(sessions)
     }
     prev_state = state
+}
+
+function removeUnusedFiles(sessions) {
+    const keys = sessions.keySeq()
+    glob(path.join(config.session_data, '*'), (err, files) => {
+         if (err != null)  {
+             return console.error('glob', err)
+         }
+         const folder_ids = files.map(path.relative.bind(null, config.session_data))
+         folder_ids.forEach(id => {
+             if (! keys.contains(id)) {
+                 const p = path.join(config.session_data, id)
+                 rimraf(p, {disableGlob: true}, (err) => {
+                     if (err != null) {
+                         console.error('rimraf', err)
+                     }
+                 })
+             }
+         })
+    })
 }
 
 function handleSessionChanges(session, id) {
