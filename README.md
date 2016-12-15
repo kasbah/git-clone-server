@@ -8,6 +8,8 @@ POST  /
 
 with JSON data: `{"url": <url of git repo> }`
 
+responds with JSON data `{"data": {"files": [...]}}` or `{"error": <error message>}`.
+
 ## Example
 
 ```
@@ -29,6 +31,4 @@ Should respond with:
 The files listed are served at `http://localhost:4000/files/...` for requests that send the session cookie.
 Sessions expire an hour after the last request and the files are removed.
 
-# License
 
-MIT
