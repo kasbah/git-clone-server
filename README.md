@@ -5,6 +5,13 @@
 A microservice to clone git repositories and serve the files for download.
 git-clone-server uses node.js and Express.
 
+# Run a dev server
+
+```
+yarn && yarn start
+```
+
+This project uses flow types so when making changes to the source files in `src/` you have to run `yarn flow-remove` to affect the files in `lib/`.
 
 # API
 
@@ -34,5 +41,3 @@ Should respond with:
 
 The files listed are served at `http://localhost:4000/files/...` for requests that send the session cookie.
 Sessions expire an hour after the last request and the files are removed.
-
-
