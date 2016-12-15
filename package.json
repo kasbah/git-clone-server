@@ -10,7 +10,7 @@
     "test": "flow && mocha test",
     "pretest:integration": "npm run flow-remove",
     "test:integration": "mocha integration --timeout=32000",
-    "test:i" : "npm test:integration"
+    "test:i": "npm test:integration"
   },
   "engines": {
     "node": "6.9.2"
@@ -22,6 +22,7 @@
     "body-parser": "^1.15.2",
     "cookie-session": "^2.0.0-alpha.2",
     "express": "^4.14.0",
+    "express-rate-limit": "^2.6.0",
     "express-session": "^1.14.0",
     "immutable": "^3.8.1",
     "is-git-url": "github:kasbah/is-git-url#ssh-user-and-not-dot-git",

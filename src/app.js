@@ -8,6 +8,7 @@ const serveStatic   = require('serve-static')
 const bodyParser    = require('body-parser')
 const isGitUrl      = require('is-git-url')
 const serveIndex    = require('serve-index')
+const RateLimit     = require('express-rate-limit')
 
 
 const {SESSION_DIR} = require('./config')
@@ -61,8 +62,19 @@ app.use((req, res, next) =>  {
 })
 
 
+// only if you're behind a reverse proxy (Heroku, Bluemix, AWS if you use an
+// ELB, custom Nginx setup, etc)
+app.enable('trust proxy')
+
+const apiLimiter = new RateLimit({
+    windowMs: 60*60*1000, // 60 minutes
+    max: 10,
+    delayMs: 0
+})
+
+
 const jsonParser = bodyParser.json()
-app.post('/', jsonParser, (req, res) => {
+app.post('/', apiLimiter, jsonParser, (req, res) => {
     if (req.session.id == null) {
         return res.send({error: 'Invalid or expired session'})
     }
