@@ -1,7 +1,6 @@
 var form = document.querySelector('form')
 var input = document.querySelector('input')
-var errors = document.querySelector('errors')
-var messages = document.querySelector('messages')
+var messages = document.querySelector('#messages')
 
 form.onsubmit = function submitUrl(event) {
     event.preventDefault()
@@ -19,7 +18,12 @@ form.onsubmit = function submitUrl(event) {
             window.location.href = folder
         }
         else {
-            messages.innerText = xhr.response.error
+            if (xhr.status != 200) {
+                messages.innerText = 'Network error, response: ' + xhr.status
+            }
+            else {
+                messages.innerText = xhr.response.error
+            }
             messages.style = 'color:red'
         }
     }
