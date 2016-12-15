@@ -4,7 +4,6 @@
   "description": "Git cloning and serving the files as a service",
   "main": "lib/server.js",
   "scripts": {
-    "prestart": "npm run flow-remove",
     "start": "node lib/server.js",
     "flow-remove": "rm -f lib/*.js && flow-remove-types src/ --out-dir lib",
     "pretest": "npm run flow-remove",
