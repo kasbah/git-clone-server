@@ -4,14 +4,17 @@
   "description": "Git cloning and serving the files as a service",
   "main": "lib/server.js",
   "scripts": {
-    "prestart": "yarn run flow-remove",
+    "prestart": "npm run flow-remove",
     "start": "node lib/server.js",
     "flow-remove": "rm -f lib/*.js && flow-remove-types src/ --out-dir lib",
-    "pretest": "yarn run flow-remove",
+    "pretest": "npm run flow-remove",
     "test": "flow && mocha test",
-    "pretest:integration": "yarn run flow-remove",
+    "pretest:integration": "npm run flow-remove",
     "test:integration": "mocha integration --timeout=32000",
-    "test:i" : "yarn test:integration"
+    "test:i" : "npm test:integration"
+  },
+  "engines": {
+    "node": "6.9.2"
   },
   "keywords": [],
   "author": "Kaspar Emanuel",
