@@ -5,6 +5,10 @@
 A microservice to clone git repositories and serve the files for download.
 git-clone-server uses node.js and Express.
 
+![screenshot1](screenshot1.png)
+
+![screenshot2](screenshot2.png)
+
 # Run a dev server
 
 ```
