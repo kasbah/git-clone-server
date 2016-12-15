@@ -21,6 +21,8 @@ with JSON data: `{"url": <url of git repo> }`
 
 responds with JSON data `{"data": {"files": [...]}}` or `{"error": <error message>}`.
 
+URLs are validated using [is-git-url](https://github.com/kasbah/is-git-url/tree/ssh-user-and-not-dot-git) and POST requests are limited to 10 per hour per IP but of course you can modify this [in the source](src/app.js) to your liking.
+
 ## Example
 
 ```
