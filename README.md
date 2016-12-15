@@ -1,6 +1,10 @@
 # git-clone-server
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/kasbah/git-clone-server)
+
 A microservice to clone git repositories and serve the files for download.
 git-clone-server uses node.js and Express.
+
 
 # API
 

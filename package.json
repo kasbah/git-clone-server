@@ -1,7 +1,7 @@
 {
   "name": "git-clone-and-serve",
   "version": "1.0.0",
-  "description": "Git cloning and serving the files as a service",
+  "description": "Microservice to clone git repositories and serve the files for download",
   "main": "lib/server.js",
   "scripts": {
     "start": "node lib/server.js",

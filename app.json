@@ -1,0 +1,6 @@
+{
+  "name": "git-clone-server",
+  "description": "Microservice to clone git repositories and serve the files for download",
+  "repository": "https://github.com/kasbah/git-clone-server",
+  "keywords": ["node", "express", "git", "git clone"]
+}
