@@ -1,5 +1,7 @@
 var form = document.querySelector('form')
 var input = document.querySelector('input')
+var errors = document.querySelector('errors')
+var messages = document.querySelector('messages')
 
 form.onsubmit = function submitUrl(event) {
     event.preventDefault()
@@ -17,8 +19,11 @@ form.onsubmit = function submitUrl(event) {
             window.location.href = folder
         }
         else {
-            console.log(xhr.response)
+            messages.innerText = xhr.response.error
+            messages.style = 'color:red'
         }
     }
     xhr.send(JSON.stringify({url: input.value}))
+    messages.innerText = 'attempting clone...'
+    messages.style = 'color:green'
 }

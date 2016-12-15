@@ -3,29 +3,27 @@
 <title> git-clone-server demo </title>
 <style>
     main {
-        width:500px;
-        height:300px;
-        position:absolute;
-        top:50%;
-        left:50%;
-        margin-top: -200px;
-        margin-left:-240px;
+        margin-left:20px;
+        margin-right:20px;
     }
     a { color:#666; text-decoration:none}
     a:hover { text-decoration:underline;}
     body { font-family:Arial}
     table {font-size:15px; width:400px; text-align:center;}
-    input {width: 70%}
+    input {width: 300px}
     form {margin:50px}
+    messages {display: block; height: 1em; margin-top:10px}
 </style>
 </head>
 <body>
     <main>
         <h1>git-clone-server</h1>
-        <p>A microservice that clones git repositories and serves the files for download. Enter a git URL.</p>
+        <p>A microservice to clone git repositories and serve the files for download. Enter a git URL:</p>
         <form>
             <input id="url-input" type=text></input>
             <button type="submit">submit</button>
+            <br/>
+            <messages> </messages>
         </form>
         <p>git-clone-server use node.js and Express. It is MIT licensed. <a href=https://github.com/kasbah/git-clone-server> The source code is on GitHub</a>.</p>
     </main>
