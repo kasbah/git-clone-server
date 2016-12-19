@@ -9,8 +9,9 @@ const bodyParser    = require('body-parser')
 const isGitUrl      = require('is-git-url')
 const serveIndex    = require('serve-index')
 const RateLimit     = require('express-rate-limit')
+const makeHandleChanges = require('./handle_changes')
 
-module.exports = function makeApp(config) {
+module.exports = function makeApp(config, store, actions) {
     const {
         SESSION_DIR,
         SESSION_MAX_AGE_MS,
@@ -21,8 +22,6 @@ module.exports = function makeApp(config) {
         TRUST_PROXY
     } = config
 
-    const {store, actions} = require('./actions')
-    require('./handle_changes')
 
     const app = express()
 
@@ -132,6 +131,8 @@ module.exports = function makeApp(config) {
             return serveStatic(dir)(req, res, next)
         })
     })
+
+    store.subscribe(makeHandleChanges(config, store, actions))
 
     return app
 }
