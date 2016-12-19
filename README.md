@@ -1,13 +1,19 @@
+
 # git-clone-server
-
-[![build status][travis_status_svg]](https://travis-ci.org/kasbah/git-clone-server)
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/kasbah/git-clone-server)
-
- [**demo**](https://git-clone-server.herokuapp.com) (be gentle)
-
 
 A microservice to clone git repositories and serve the files for download.
 This project uses node.js and Express.
+
+- [![build status][travis_status_svg]](https://travis-ci.org/kasbah/git-clone-server)
+
+- [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/kasbah/git-clone-server)
+
+- [**demo**](https://git-clone-server.herokuapp.com) (be gentle)
+
+
+
+## Example client
+The [example client](client/) sends a request and then redirects to the directory listing. 
 
 ![screenshot1](screenshot1.png)
 
