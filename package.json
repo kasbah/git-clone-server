@@ -1,7 +1,7 @@
 {
-  "name": "git-clone-and-serve",
+  "name": "git-clone-server",
   "version": "1.0.0",
-  "description": "Microservice to clone git repositories and serve the files for download",
+  "description": "Git clone as a microservice",
   "main": "lib/server.js",
   "scripts": {
     "start": "node lib/server.js",
@@ -30,6 +30,9 @@
     "serve-index": "^1.8.0",
     "serve-static": "^1.11.1",
     "shortid": "^2.2.6"
+  },
+  "bin": {
+    "git-clone-server": "lib/server.js"
   },
   "devDependencies": {
     "chai": "^3.5.0",

@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 //@flow
 const app = require('./app')
 
