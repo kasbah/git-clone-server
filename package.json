@@ -24,6 +24,7 @@
     "express": "^4.14.0",
     "express-rate-limit": "^2.6.0",
     "express-session": "^1.14.0",
+    "glob": "^7.1.1",
     "immutable": "^3.8.1",
     "is-git-url": "github:kasbah/is-git-url#ssh-user-and-not-dot-git",
     "redux": "^3.5.2",
