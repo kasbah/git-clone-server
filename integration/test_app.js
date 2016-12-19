@@ -1,16 +1,19 @@
 const {expect} = require('chai')
 const request = require('supertest')
 
-const app = require('../lib/app')
 
 describe('app' , () => {
     it('responds to GET on index', done => {
+        const config = require('../config')
+        const app = require('../lib/app')(config)
         request(app)
             .get('/')
             .expect(200)
             .end((err, res) => done())
     })
     it('responds to empty POST with an error type', done => {
+        const config = require('../config')
+        const app = require('../lib/app')(config)
         request(app)
             .post('/')
             .expect(200)
@@ -20,6 +23,8 @@ describe('app' , () => {
             })
     })
     it('responds to invalid POST with an error type', done => {
+        const config = require('../config')
+        const app = require('../lib/app')(config)
         request(app)
             .post('/')
             .send({ name: 'Manny', species: 'cat' })
@@ -30,6 +35,8 @@ describe('app' , () => {
             })
     })
     it('responds to non existent git repo with error type', done => {
+        const config = require('../config')
+        const app = require('../lib/app')(config)
         request(app)
             .post('/')
             .send({ url: 'https://github.com/kasbah/no-way-this-repo-exists-look-at-the-name-its-way-too-long'})
@@ -39,6 +46,8 @@ describe('app' , () => {
                 done()
             })
     })
+    const config = require('../config')
+    const app = require('../lib/app')(config)
     const agent = request.agent(app)
     let files
     it('responds to request with test-repo data', done => {
