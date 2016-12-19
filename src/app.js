@@ -52,7 +52,7 @@ function setRemovalTimeout(id) {
 //allow enabled cross origin requests
 app.use((req, res, next) =>  {
     const origin = req.get('origin')
-    if (origin in ALLOWED_CORS_DOMAINS) {
+    if (ALLOWED_CORS_DOMAINS.indexOf(origin) >= 0) {
         res.header('Access-Control-Allow-Origin', origin);
         res.header('Access-Control-Allow-Methods', 'GET,POST');
         res.header('Access-Control-Allow-Headers', 'Content-Type');
