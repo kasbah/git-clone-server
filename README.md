@@ -1,8 +1,10 @@
 # git-clone-server
 
+[![build status][travis_status_svg]](https://travis-ci.org/kasbah/git-clone-server)
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/kasbah/git-clone-server)
 
-[**demo**](https://git-clone-server.herokuapp.com) (be gentle)
+ [**demo**](https://git-clone-server.herokuapp.com) (be gentle)
+
 
 A microservice to clone git repositories and serve the files for download.
 This project uses node.js and Express.
@@ -49,3 +51,5 @@ Should respond with:
 
 The files listed are served at `http://localhost:4000/files/...` for requests that send the session cookie.
 Sessions expire an hour after the last request and the files are removed.
+
+[travis_status_svg]: https://travis-ci.org/kasbah/git-clone-server.svg?branch=master
