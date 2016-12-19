@@ -10,7 +10,7 @@
     "test": "flow && mocha test",
     "pretest:integration": "npm run flow-remove",
     "test:integration": "mocha integration --timeout=32000",
-    "test:i": "npm test:integration"
+    "test:i": "npm run test:integration"
   },
   "engines": {
     "node": "6.9.2"

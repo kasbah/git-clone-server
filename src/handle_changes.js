@@ -6,7 +6,7 @@ const glob   = require('glob')
 const rimraf = require('rimraf')
 const {join, relative} = require('path')
 
-const {SESSION_DIR, MAX_CLONE_DURATION} = require('./config')
+const {SESSION_DIR, MAX_CLONE_DURATION_MS} = require('../config')
 const {store, actions} = require('./actions')
 
 
@@ -100,7 +100,7 @@ function startClone(id: string, url: string) {
         const timeout = setTimeout(() => {
             console.warn(`clone timed out on ${url}`)
             child.kill()
-        }, MAX_CLONE_DURATION)
+        }, MAX_CLONE_DURATION_MS)
         child.on('exit', processStatus => {
             const status = processStatus === 0 ? 'clone_done' : 'failed'
             clearTimeout(timeout)

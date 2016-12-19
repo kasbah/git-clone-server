@@ -11,20 +11,24 @@ const serveIndex    = require('serve-index')
 const RateLimit     = require('express-rate-limit')
 
 
-const {SESSION_DIR} = require('./config')
+const {
+    SESSION_DIR,
+    SESSION_MAX_AGE_MS,
+    ALLOWED_CORS_DOMAINS,
+    SESSION_SECRETS,
+} = require('../config')
+
 const {store, actions} = require('./actions')
 require('./handle_changes')
 
 const app = express()
 
-const sessionAge = 60 * 60 * 1000 //ms
-
 app.use('/', serveStatic('./client'))
 
 const session = cookieSession({
     name: 'session',
-    keys: ['secret squirrel'],
-    maxAge: sessionAge
+    keys: SESSION_SECRETS,
+    maxAge: SESSION_MAX_AGE_MS
 })
 
 app.use(session)
@@ -38,9 +42,20 @@ function setRemovalTimeout(id) {
     }
     const timeout = setTimeout(() => {
         actions.removeSession(id)
-    }, sessionAge)
+    }, SESSION_MAX_AGE_MS)
     actions.setTimeout(id, {timeout})
 }
+
+//allow enabled cross origin requests
+app.use((req, res, next) =>  {
+    const origin = req.get('origin')
+    if (origin in ALLOWED_CORS_DOMAINS) {
+        res.header('Access-Control-Allow-Origin', origin);
+        res.header('Access-Control-Allow-Methods', 'GET,POST');
+        res.header('Access-Control-Allow-Headers', 'Content-Type');
+    }
+    return next()
+})
 
 // Update a value in the cookie so that the set-cookie will be sent.
 // Only changes every minute so that it's not sent with every request.
