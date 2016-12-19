@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 //@flow
 const config = require('../config')
 const {store, actions} = require('./actions')
