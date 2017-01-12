@@ -7,8 +7,8 @@ module.exports = {
     MAX_CLONES_PER_IP     : 10,
     //duration after which to clear countng of MAX_CLONES_PER_IP (in milliseconds)
     MAX_CLONES_WINDOW_MS  : 60 * 60 * 1000,
-    //trust x-forward headers for IP limiting above (when behind trusted proxy, e.g.
-    //Heroku or own Nginx setup)
+    //trust x-forward headers for IP limiting above (set to true when behind 
+    //a trusted proxy, e.g. Heroku or own Nginx setup)
     TRUST_PROXY           : true,
     //maximum time session is kept after last request (in milliseconds)
     SESSION_MAX_AGE_MS    : 60 * 60 * 1000,
