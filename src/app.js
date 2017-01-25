@@ -114,7 +114,7 @@ app.post('/', apiLimiter, jsonParser, (req, res) => {
             return unsubscribe()
         }
         if (repo.get('status') === 'failed') {
-            res.send({error: 'Git clone failed. Is the URL correct?'})
+            res.send({error: 'Could not clone URL'})
             return unsubscribe()
         }
     })

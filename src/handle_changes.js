@@ -117,7 +117,8 @@ function fetch(id, url, slug) {
 
 function clone(id, url, slug) {
     const folder = toFolder(id, slug)
-    return cp.exec(`git clone --depth=1 ${url} ${folder}`)
+    //setting GIT_ASKPASS=/bin/echo forces an error instead of waiting for login
+    return cp.exec(`GIT_ASKPASS=/bin/echo git clone --depth=1 ${url} ${folder}`)
 }
 
 function reportStatus(id, url, processStatus) {
