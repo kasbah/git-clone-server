@@ -15,16 +15,17 @@ store.subscribe(handleChanges)
 
 function handleChanges() {
     const state = store.getState()
-    if (! state.equals(prev_state)) {
-        const sessions = state.get('sessions')
-        const previous_sessions = prev_state.get('sessions')
-        sessions.forEach((session, id) =>  {
-            if (! session.equals(previous_sessions.get(id))) {
-                handleSessionChanges(session, id)
-            }
-        })
-        removeUnusedFiles(sessions)
+    if (state.equals(prev_state)) {
+        return
     }
+    const sessions = state.get('sessions')
+    const previous_sessions = prev_state.get('sessions')
+    sessions.forEach((session, id) =>  {
+        if (! session.equals(previous_sessions.get(id))) {
+            handleSessionChanges(session, id)
+        }
+    })
+    removeUnusedFiles(sessions)
     prev_state = state
 }
 
