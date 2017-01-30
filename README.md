@@ -20,7 +20,7 @@ The [example client](client/) sends a request and then redirects to the director
 yarn && yarn start
 ```
 
-This project uses flow types so when making changes to the source files in `src/` you have to run `yarn flow-remove` to affect the files in `lib/`.
+This project uses flow types so be aware when making changes to the source files in `src/` you have to run `yarn flow-remove` to affect the files in `lib/`.
 
 # API
 

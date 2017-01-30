@@ -4,9 +4,12 @@
   "description": "Git clone as a microservice",
   "main": "lib/server.js",
   "scripts": {
+    "prestart": "npm run flow-remove",
     "start": "node lib/server.js",
     "flow-remove": "rm -f lib/*.js && flow-remove-types src/ --out-dir lib",
+    "pretest": "npm run flow-remove",
     "test": "flow && mocha test",
+    "pretest:integration": "npm run flow-remove",
     "test:integration": "mocha integration --timeout=32000",
     "test:i": "npm run test:integration"
   },
