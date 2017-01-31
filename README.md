@@ -1,7 +1,7 @@
 
 # git-clone-server
 
-A microservice to clone git repositories and serve the files for download.
+A microservice to clone Git repositories and serve the files for download.
 This project uses node.js and Express.
 
 | [**demo**](https://git-clone-server.herokuapp.com) | [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/kasbah/git-clone-server)| [![build status][travis_status_svg]](https://travis-ci.org/kasbah/git-clone-server) |
@@ -28,7 +28,7 @@ POST  /
 
 with JSON data: `{"url": <url of git repo> }`
 
-responds with JSON data `{"data": {"files": [...]}}` or `{"error": <error message>}`.
+responds with JSON data `{"data": {"root": <root path>, "files": [...]}}` or `{"error": <error message>}`.
 
 URLs are validated using [git-clone-able](https://github.com/kasbah/git-clone-able) and POST requests are limited to 10 per hour per IP but of course you can modify this [in the config](config.js) to your liking.
 
@@ -42,9 +42,10 @@ Should respond with:
 ```
 {
     "data": {
+        "root" : "/files/ce28fe0",
         "files": [
-            "/files/ce28fe0/test-dir/test-file-2",
-            "/files/ce28fe0/test-file"
+            "test-dir/test-file-2",
+            "test-file"
         ]
     }
 }

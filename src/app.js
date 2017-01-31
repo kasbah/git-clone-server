@@ -110,7 +110,12 @@ app.post('/', apiLimiter, jsonParser, (req, res) => {
             return
         }
         if (repo.get('status') === 'done') {
-            res.send({data: {files: repo.get('files').map(p => '/files/' + p)}})
+            res.send({
+                data: {
+                    root: path.join('/files/', repo.get('slug')),
+                    files: repo.get('files')
+                }
+            })
             return unsubscribe()
         }
         if (repo.get('status') === 'failed') {

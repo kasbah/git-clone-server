@@ -12,10 +12,9 @@ form.onsubmit = function submitUrl(event) {
     xhr.setRequestHeader('Accept', 'application/json')
     xhr.onload = function () {
         if (xhr.response.data) {
+            var root = xhr.response.data.root
             console.log(xhr.response.data.files)
-            var file = xhr.response.data.files[0]
-            var folder = file.split('/').slice(0, 3).join('/')
-            window.location.href = folder
+            window.location.href = root
         }
         else {
             if (xhr.status != 200) {

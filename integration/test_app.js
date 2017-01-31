@@ -1,5 +1,6 @@
 const {expect} = require('chai')
-const request = require('supertest')
+const request  = require('supertest')
+const path     = require('path')
 
 const app = require('../lib/app')
 
@@ -40,13 +41,15 @@ describe('app' , () => {
             })
     })
     const agent = request.agent(app)
-    let files
+    let files, root
     it('responds to request with test-repo data', done => {
         agent.post('/')
             .send({url:'https://github.com/kasbah/test-repo'})
             .expect(200)
             .end((err, res) => {
                 files = res.body.data.files
+                root = res.body.data.root
+                expect(root).to.be.ok
                 const contains1 = files.reduce((prev, p) => {
                     return (prev || /test-file$/.test(p))
                 }, false)
@@ -59,8 +62,8 @@ describe('app' , () => {
             })
     })
     it('serves the test-repo files', done => {
-        const requests = files.map(path => {
-            return agent.get(path).expect(200)
+        const requests = files.map(p => {
+            return agent.get(path.join(root, p)).expect(200)
         })
         Promise.all(requests).then(() => done()).catch(done)
     })
